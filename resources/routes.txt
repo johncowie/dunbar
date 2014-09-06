@@ -1,4 +1,6 @@
 GET /            home
 GET /hello/:name hello
 GET /hidden      hidden
-GET /login       login
+GET /login       login-form
+POST /login      login
+GET /logout      logout

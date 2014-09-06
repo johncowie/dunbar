@@ -51,3 +51,7 @@
 (def routes (load-routes-from-file "routes.txt"))
 
 ; TODO validate request method
+
+
+(defn path [action & params]
+  (apply bidi/path-for routes action params))

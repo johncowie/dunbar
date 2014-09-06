@@ -5,7 +5,7 @@
                  [ring "1.3.1"]
                  [bidi "1.10.5-SNAPSHOT"]
                  [prismatic/schema "0.2.6"]
-                 [traversy "0.1.0"]
+                 [traversy "0.2.0"]
                  [midje "1.6.3"]
                  [com.novemberain/monger "2.0.0"]
                  [enlive "1.1.5"]
