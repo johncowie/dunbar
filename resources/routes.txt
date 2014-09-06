@@ -1,0 +1,4 @@
+GET /            home
+GET /hello/:name hello
+GET /hidden      hidden
+GET /login       login
