@@ -4,3 +4,4 @@ GET /hidden      hidden
 GET /login       login-form
 POST /login      login
 GET /logout      logout
+GET /friends/add add-friend-form

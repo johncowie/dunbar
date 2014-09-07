@@ -1,6 +1,6 @@
 (ns dunbar.controller
   (:require [ring.util.response :refer [response not-found redirect]]
-            [dunbar.view :refer [hello-page login-form-page]]
+            [dunbar.view :as v]
             [dunbar.routes :as r]
             [dunbar.utils :refer [wrap-handlers]]
             ))
@@ -8,13 +8,13 @@
 (defn home [_] (response "Hello"))
 
 (defn hello [{{name :name} :params}]
-  (response (hello-page "Hello World!" (str "Hello cruel " name))))
-
-(defn hidden [_] (response "I support Cardiff City!!"))
+  (response (v/hello-page "Hello World!" (str "Hello cruel " name))))
 
 (defn four-o-four [request] (not-found "Nothing was found :-("))
 
-(defn login-form [request] (response (login-form-page "Login")))
+(defn login-form [request] (response (v/login-form-page "Login")))
+
+(defn friend-form [request] (response (v/friend-form-page "Add friend")))
 
 (defn login [request]
   (let [username (get-in request [:params :username])]
@@ -43,8 +43,8 @@
   (->
    {:home home
     :hello hello
-    :hidden hidden
     :login login
     :logout logout
-    :login-form login-form}
+    :login-form login-form
+    :add-friend-form friend-form}
    (wrap-handlers [:hidden] wrap-secure)))

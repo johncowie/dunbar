@@ -13,6 +13,7 @@
                  ]
   :plugins [[lein-ring "0.8.11"]]
   :ring {:handler dunbar.handler/app}
+  :main dunbar.system
   :user {:plugins [[lein-midje "3.1.1"]]}
   :profiles {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                                   [ring-mock "0.1.5"]]}})

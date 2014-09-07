@@ -11,14 +11,19 @@
   (reduce str (index-page-template title content)))
 
 (html/defsnippet login-form-snippet "public/templates/index.html" [:#login]
-  []
-  )
+  [])
+
+(html/defsnippet friend-form-snippet "public/templates/index.html" [:#friend-form]
+  [])
 
 (defn render-snippet [snippet]
   (reduce str (html/emit* snippet)))
 
 (defn login-form-page [title]
   (page title (render-snippet (login-form-snippet))))
+
+(defn friend-form-page [title]
+  (page title (render-snippet (friend-form-snippet))))
 
 (html/defsnippet hello-snippet "public/templates/index.html" [:#home]
   [message]
