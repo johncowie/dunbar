@@ -1,0 +1,40 @@
+body {
+    background-color: #dddddd;
+    margin: 0px;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: #fff;
+}
+
+a:hover {
+    color: #990000;
+}
+
+#friend-list td {
+    border: 1px solid #999999;
+}
+
+#content {
+    width: 1000px;
+    margin: 0px auto 0px auto;
+}
+
+#topbar {
+    display: block;
+    background-color: #999999;
+    padding: 30px;
+}
+
+#navigation {
+    width: 1000px;
+    font-size: 1.2em;
+    font-style: none;
+}
+
+#navigation li {
+    display: inline-block;
+    margin: 10px;
+}

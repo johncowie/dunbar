@@ -1,29 +1,55 @@
 <html>
   <head>
     <title>THIS IS A TITLE</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
   </head>
   <body>
-    <div id="content">
-      <div id="home">
-        <h1 class="message">THIS IS A BODY</h1>
+    <div id="container">
+      <div id="topbar">
+        <div id="navigation">
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Somewhere</a></li>
+            <li><a href="#">Link1</a></li>
+            <li><a href="#">Link2</a></li>
+          </ul>
+        </div>
       </div>
-      <div id="login">
-        <form method="POST">
-          <h2>Login</h2>
-          <label for="username">Please enter your username</label>
-          <input type="text" name="username" />
-          <input type="submit" value="Login"/>
-        </form>
-      </div>
-      <div id="friend-form">
-        <form method="POST">
-          <h2>Add a friend</h2>
-          <label for="firstname">First name:</label>
-          <input type="text" name="firstname" />
-          <label for="lastname">Last name:</label>
-          <input type="text" name="lastname" />
-          <input type="submit" value="Add">
-        </form>
+      <div id="content">
+        <div id="home">
+          <h1 class="message">THIS IS A MESSAGE</h1>
+        </div>
+        <div id="login">
+          <form method="POST">
+            <h2>Login</h2>
+            <label for="username">Please enter your username</label>
+            <input type="text" name="username" />
+            <input type="submit" value="Login"/>
+          </form>
+        </div>
+        <div id="friend-form">
+          <form method="POST">
+            <h2>Add a friend</h2>
+            <label for="firstname">First name:</label>
+            <input type="text" name="firstname" />
+            <label for="lastname">Last name:</label>
+            <input type="text" name="lastname" />
+            <input type="submit" value="Add">
+          </form>
+        </div>
+        <div id="friend-list">
+          <h2>Friends</h2>
+          <table>
+            <tr>
+              <th>Name</th>
+              <th>Last Seen</th>
+            </tr>
+            <tr class="friend-row">
+              <td class="friend-name">Emma Hughes</td>
+              <td class="friend-last-seen">12 days ago</td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
   </body>

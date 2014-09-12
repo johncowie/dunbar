@@ -1,7 +1,9 @@
-GET /            home
-GET /hello/:name hello
-GET /hidden      hidden
-GET /login       login-form
-POST /login      login
-GET /logout      logout
-GET /friends/add add-friend-form
+GET  /                  home
+GET  /hello/:name       hello
+GET  /hidden            hidden
+GET  /login             login-form
+POST /login             login
+GET  /logout            logout
+GET  /friends/add       add-friend-form
+POST /friends/add       add-friend
+GET  /friends           friend-list
