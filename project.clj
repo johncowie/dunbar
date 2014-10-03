@@ -10,9 +10,11 @@
                  [com.novemberain/monger "2.0.0"]
                  [enlive "1.1.5"]
                  [com.stuartsierra/component "0.2.1"]
+                 [clj-yaml "0.4.0"]
                  ]
-  :plugins [[lein-ring "0.8.11"]]
-  :ring {:handler dunbar.handler/app}
+  :plugins [[lein-ring "0.8.11"]
+            [lein-midje "3.1.1"]]
+  :ring {:handler dunbar.system/lein-ring-handler}
   :main dunbar.system
   :user {:plugins [[lein-midje "3.1.1"]]}
   :profiles {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]

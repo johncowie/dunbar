@@ -25,16 +25,25 @@ a:hover {
 #topbar {
     display: block;
     background-color: #999999;
-    padding: 30px;
 }
 
 #navigation {
-    width: 1000px;
-    font-size: 1.2em;
+    width: 600px;
+    background-color: #000099;
+}
+
+#navigation-login {
+    width: 400px;
+    background-color: #009900;
+}
+
+.topbar-links {
+    display: inline-block;
+    font-size: 1.0em;
     font-style: none;
 }
 
-#navigation li {
+.topbar-links li {
     display: inline-block;
     margin: 10px;
 }

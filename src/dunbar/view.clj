@@ -1,10 +1,23 @@
 (ns dunbar.view
-  (:require [net.cgrand.enlive-html :as html]))
+  (:require [net.cgrand.enlive-html :as html]
+            [dunbar.routes :as r]))
+
+(defn- render-snippet [snippet]
+  (reduce str (html/emit* snippet)))
 
 (html/deftemplate index-page-template "public/templates/index.html"
-  [title content]
+  [title navigation-snippet content-snippet]
   [:title] (html/content title)
-  [:#content] (html/html-content content))
+  [:#navigation] (html/html-content (render-snippet navigation-snippet))
+  [:#content] (html/html-content (render-snippet content-snippet)))
+
+(html/defsnippet navigation-snippet "public/templates/index.html" [:#navigation]
+  [nav-links]
+  [:ul [:li (html/but html/first-of-type)]] nil ; remove all but first dummy link
+  [:ul [:li html/first-of-type]]
+  (html/clone-for [{href :href text :text} nav-links]
+                  [:li :a] (html/content text)
+                  [:li :a] (html/set-attr :href href)))
 
 (html/defsnippet hello-snippet "public/templates/index.html" [:#home]
   [message]
@@ -23,22 +36,18 @@
                   [:tr.friend-row :.friend-name] (html/content (str firstname " " lastname))
                   [:tr.friend-row :.friend-last-seen] (html/content "Last seen not implemented yet")))
 
-(defn- render-snippet [snippet]
-  (reduce str (html/emit* snippet)))
-
 (defn- page
-  [title content]
-  (reduce str (index-page-template title content)))
+  [title nav-links content]
+  (reduce str (index-page-template title (navigation-snippet nav-links) content)))
 
-(defn login-form-page [title]
-  (page title (render-snippet (login-form-snippet))))
+(defn hello-page [title nav message]
+  (page title nav (hello-snippet message)))
 
-(defn friend-form-page [title]
-  (page title (render-snippet (friend-form-snippet))))
+(defn login-form-page [title nav]
+  (page title nav (login-form-snippet)))
 
-(defn friend-list-page [title friends]
-  (page title (render-snippet (friend-list-snippet friends))))
+(defn friend-form-page [title nav]
+  (page title nav (friend-form-snippet)))
 
-(defn hello-page
-  [title message]
-  (page title (render-snippet (hello-snippet message))))
+(defn friend-list-page [title nav friends]
+  (page title nav (friend-list-snippet friends)))

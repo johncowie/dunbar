@@ -1,6 +1,6 @@
 (ns dunbar.test.routes
   (:require [midje.sweet :refer :all]
-            [dunbar.routes :refer [load-routes knit-contexts]]
+            [dunbar.routes :refer [load-routes]]
             [bidi.bidi :refer [path-for match-route]]
             ))
 
@@ -20,7 +20,7 @@
        )
 
 (future-fact "knit-contexts"
-       (knit-contexts [["/home"] ["GET" "/a" "a"]]) => [["GET" "/home/a" "a"]]
+       ;(knit-contexts [["/home"] ["GET" "/a" "a"]]) => [["GET" "/home/a" "a"]]
        )
 
 ;(path-for ["" [[["/"] {:get  :home}] [["/hello/" :name] {:get :hello}]]] :home)

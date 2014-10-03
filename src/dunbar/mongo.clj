@@ -1,9 +1,7 @@
 (ns dunbar.mongo
   (:require [com.stuartsierra.component :as component]
             [monger.core :as mongo]
-            [monger.collection :as mongo-c]
-            )
-  )
+            [monger.collection :as mongo-c]))
 
 (defprotocol DB
   (save! [this table record])
@@ -24,10 +22,10 @@
 (defrecord MongoDB [host port db-name]
   component/Lifecycle
   (start [this]
-    (prn "Starting up MongoDB")
+    (println "Starting up MongoDB")
     (init-db this host port db-name))
   (stop [this]
-    (prn "Stopping MongoDB")
+    (println "Stopping MongoDB")
     (disconnect this))
   DB
   (save! [this table record]
@@ -39,5 +37,5 @@
   (delete! [this table query]
     (throw (Exception. "Implement me"))))
 
-(defn new-mongo-db [host port db-name]
+(defn new-mongo-db [{{host :host port :port db-name :db} :mongo}]
   (MongoDB. host port db-name))

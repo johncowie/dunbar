@@ -32,16 +32,23 @@
     (wrap-resource "/public")
     (wrap-404 c/four-o-four)))
 
-(defrecord WebServer [db]
+(defrecord Handler [db]
   component/Lifecycle
   (start [this]
-    (assoc this :server (run-jetty (make-app db) {:port 3000}))
-    this)
+    (assoc this :handle (make-app db)))
+  (stop [this]
+    (dissoc this :handle)))
+
+(defn new-handler []
+  (map->Handler {}))
+
+(defrecord WebServer [port handler]
+  component/Lifecycle
+  (start [this]
+    (assoc this :server (run-jetty (:handle handler) {:port port})))
   (stop [this]
     (doto (:server this) .join .stop)
     (dissoc this :server)))
 
-(defn new-web-server []
-  (map->WebServer {}))
-
-(def app (make-app nil))
+(defn new-web-server [{{port :port} :app}]
+  (map->WebServer {:port port}))
