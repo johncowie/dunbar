@@ -1,0 +1,6 @@
+firstname:
+  mandatory: "First name is required"
+  max-length: "First name can not be longer than 50 characters"
+lastname:
+  mandatory: "Last name is required"
+  max-length: "Last name can not be longer than 50 characters"

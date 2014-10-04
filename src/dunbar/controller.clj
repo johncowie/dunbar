@@ -2,7 +2,12 @@
   (:require [ring.util.response :refer [response not-found redirect content-type]]
             [dunbar.view :as v]
             [dunbar.routes :as r]
-            [dunbar.store :as s]))
+            [dunbar.store :as s]
+            [dunbar.validation :refer [validate validate-with-translations]]
+            [dunbar.logic :refer [error->]]))
+
+(defn username [request]
+  (get-in request [:session :username]))
 
 (defn navigation []
   [{:text "Friends" :href (r/path :friend-list)}
@@ -15,20 +20,28 @@
 
 (defn four-o-four [request] (not-found "Nothing was found :-("))
 
-(defn login-form [request] (html-response (v/login-form-page "Login" (navigation))))
+(defn login-form [request]
+  (html-response (v/login-form-page "Login" (navigation))))
 
-(defn friend-form [request] (html-response (v/friend-form-page "Add friend" (navigation))))
+(defn friend-form
+  [request]
+  (html-response (v/friend-form-page "Add friend" (navigation) {})))
 
 (defn friend-list [db request]
-  (let [username (get-in request [:session :username])
-        friends (s/load-friends db username)]
+  (let [friends (s/load-friends db (username request))]
     (html-response (v/friend-list-page "My friends" (navigation) friends))))
 
+(defn marshall-params [params]
+  (select-keys params [:firstname :lastname]))
+
 (defn add-friend [db request]
-  (let [username (get-in request [:session :username])]
-    (-> (select-keys (:params request) [:firstname :lastname])
-        (s/add-friend db username)))
-  (redirect (r/path :friend-list)))
+  (let [{:keys [state success]} (error-> (:params request)
+                                         (partial marshall-params)
+                                         validate-with-translations
+                                         #(s/add-friend % db (username request)))]
+    (if success
+      (redirect (r/path :friend-list))
+      (html-response (v/friend-form-page "Add friend" (navigation) (:errors state))))))
 
 (defn login [request]
   (let [username (get-in request [:params :username])]
@@ -44,7 +57,7 @@
 (defn not-logged-in [request] (redirect (r/path :login-form)))
 
 (defn logged-in? [request]
-  (get-in request [:session :username]))
+  (username request))
 
 (defn wrap-secure [handler]
   (fn [request]

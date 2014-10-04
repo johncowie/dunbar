@@ -26,8 +26,8 @@
   [errors]
   [:ul [:li (html/but html/first-of-type)]] nil
   [:ul [:li html/first-of-type]]
-  (html/clone-for [text errors]
-                  [:li] (html/content text)))
+  (html/clone-for [text (vals errors)]
+                  [:li] (html/content (str text))))
 
 (html/defsnippet friend-form-snippet "public/templates/index.html" [:#friend-form]
   [errors]
@@ -48,8 +48,8 @@
 (defn login-form-page [title nav]
   (page title nav (login-form-snippet)))
 
-(defn friend-form-page [title nav]
-  (page title nav (friend-form-snippet [])))
+(defn friend-form-page [title nav errors]
+  (page title nav (friend-form-snippet errors)))
 
 (defn friend-list-page [title nav friends]
   (page title nav (friend-list-snippet friends)))
