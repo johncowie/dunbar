@@ -19,15 +19,20 @@
                   [:li :a] (html/content text)
                   [:li :a] (html/set-attr :href href)))
 
-(html/defsnippet hello-snippet "public/templates/index.html" [:#home]
-  [message]
-  [:.message] (html/content message))
-
 (html/defsnippet login-form-snippet "public/templates/index.html" [:#login]
   [])
 
+(html/defsnippet validation-errors-snippet "public/templates/index.html" [:#friend-form :.validation-errors]
+  [errors]
+  [:ul [:li (html/but html/first-of-type)]] nil
+  [:ul [:li html/first-of-type]]
+  (html/clone-for [text errors]
+                  [:li] (html/content text)))
+
 (html/defsnippet friend-form-snippet "public/templates/index.html" [:#friend-form]
-  [])
+  [errors]
+  [:.validation-errors] (when-not (empty? errors)
+                          (html/substitute (validation-errors-snippet errors))))
 
 (html/defsnippet friend-list-snippet "public/templates/index.html" [:#friend-list]
   [friends]
@@ -40,14 +45,11 @@
   [title nav-links content]
   (reduce str (index-page-template title (navigation-snippet nav-links) content)))
 
-(defn hello-page [title nav message]
-  (page title nav (hello-snippet message)))
-
 (defn login-form-page [title nav]
   (page title nav (login-form-snippet)))
 
 (defn friend-form-page [title nav]
-  (page title nav (friend-form-snippet)))
+  (page title nav (friend-form-snippet [])))
 
 (defn friend-list-page [title nav friends]
   (page title nav (friend-list-snippet friends)))

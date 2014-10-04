@@ -2,7 +2,8 @@
   (:require [com.stuartsierra.component :as component]
             [dunbar.handler :refer [new-web-server new-handler]]
             [dunbar.mongo :refer [new-mongo-db]]
-            [dunbar.config :refer [load-config]])
+            [dunbar.config :refer [load-config]]
+            [dunbar.test.test-components :refer [new-test-db]])
   (:gen-class)
   )
 
@@ -32,9 +33,14 @@
 ;;; stuff for lein ring server ;;;
 
 (defn start-lein []
-  (start (dissoc (construct-system "config/app.yml") :webserver)))
+  (-> (construct-system "config/app.yml")
+      (dissoc :webserver)
+      (assoc :db (new-test-db))
+      start))
 
 (defn lein-ring-handler [request]
   (when-not (get @system :handler)
     (start-lein))
   ((get-in @system [:handler :handle]) request))
+
+; TODO add destroy method

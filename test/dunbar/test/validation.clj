@@ -23,5 +23,4 @@
               (validate {:lastname ""}) => (has-error? [:lastname] :min-length)
               (validate {}) => (has-error? [:lastname] :mandatory)
               (validate {:lastname (string-of-length 50)}) =not=> (has-errors? [:lastname])
-              (validate {:lastname (string-of-length 1)}) =not=> (has-errors? [:lastname]))
-       )
+              (validate {:lastname (string-of-length 1)}) =not=> (has-errors? [:lastname])))

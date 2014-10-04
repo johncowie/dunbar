@@ -21,9 +21,6 @@
         </div>
       </div>
       <div id="content">
-        <div id="home">
-          <h1 class="message">THIS IS A MESSAGE</h1>
-        </div>
         <div id="login">
           <form method="POST">
             <h2>Login</h2>
@@ -32,7 +29,15 @@
             <input id="login-submit" type="submit" value="Login"/>
           </form>
         </div>
+        <hr/>
         <div id="friend-form">
+          <div class="validation-errors">
+            <h3>Please correct the following:</h3>
+            <ul>
+              <li>Something is too long</li>
+              <li>Something is too short</li>
+            </ul>
+          </div>
           <form method="POST">
             <h2>Add a friend</h2>
             <label for="firstname">First name:</label>
@@ -42,6 +47,7 @@
             <input type="submit" value="Add">
           </form>
         </div>
+        <hr/>
         <div id="friend-list">
           <h2>Friends</h2>
           <table>
@@ -55,6 +61,7 @@
             </tr>
           </table>
         </div>
+        <hr/>
       </div>
     </div>
   </body>
