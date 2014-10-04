@@ -11,6 +11,8 @@
                  [enlive "1.1.5"]
                  [com.stuartsierra/component "0.2.1"]
                  [clj-yaml "0.4.0"]
+                 [clj-webdriver "0.6.0"]
+                 [kerodon "0.4.0"]
                  ]
   :plugins [[lein-ring "0.8.11"]
             [lein-midje "3.1.1"]]

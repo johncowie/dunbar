@@ -39,8 +39,9 @@
   (stop [this]
     (dissoc this :handle)))
 
-(defn new-handler []
-  (map->Handler {}))
+(defn new-handler
+  ([] (new-handler {}))
+  ([dependencies] (map->Handler dependencies)))
 
 (defrecord WebServer [port handler]
   component/Lifecycle

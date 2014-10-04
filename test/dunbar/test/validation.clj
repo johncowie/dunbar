@@ -1,46 +1,4 @@
-(ns dunbar.test.validation
-  (:require [midje.sweet :refer :all]))
 
-(defn string-of-length [length]
-  (apply str (take length (repeat "a"))))
-
-(defn has-error? [key error-type]
-  (fn [result]
-    (= (get (:errors result) key) error-type)))
-
-(defn has-errors? [key]
-  (fn [result]
-    (get (:errors result) key)))
-
-(defn min-length [length]
-  (fn [v]
-    (when (< (count v) length)
-      :min-length)))
-
-(defn max-length [length]
-  (fn [v]
-    (when (> (count v) length)
-      :max-length)))
-
-(defn mandatory [v]
-  (when (nil? v)
-    :mandatory))
-
-(def validations
-  {:firstname [mandatory (min-length 1) (max-length 50)]
-   :lastname [mandatory (min-length 1) (max-length 50)]}
-  )
-
-(defn validator [validations data]
-  {:errors
-   (into {}
-         (for [[k v] validations]
-           (cond (coll? v)
-                 (if-let [r (reduce (fn [result validation] (or result (validation (k data)))) nil v)]
-                   [[k] r]
-                   [])
-                 :else [[k] (v (k data))]
-                 )))})
 
 (defn validate [data]
   (validator validations data))
