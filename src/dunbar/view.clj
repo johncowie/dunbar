@@ -30,9 +30,11 @@
                   [:li] (html/content (str text))))
 
 (html/defsnippet friend-form-snippet "public/templates/index.html" [:#friend-form]
-  [errors]
+  [posted-data errors]
   [:.validation-errors] (when-not (empty? errors)
-                          (html/substitute (validation-errors-snippet errors))))
+                          (html/substitute (validation-errors-snippet errors)))
+  [[:input (html/attr= :name "firstname")]] (html/set-attr :value (:firstname posted-data))
+  [[:input (html/attr= :name "lastname")]] (html/set-attr :value (:lastname posted-data)))
 
 (html/defsnippet friend-list-snippet "public/templates/index.html" [:#friend-list]
   [friends]
@@ -48,8 +50,8 @@
 (defn login-form-page [title nav]
   (page title nav (login-form-snippet)))
 
-(defn friend-form-page [title nav errors]
-  (page title nav (friend-form-snippet errors)))
+(defn friend-form-page [title nav posted-data errors]
+  (page title nav (friend-form-snippet posted-data errors)))
 
 (defn friend-list-page [title nav friends]
   (page title nav (friend-list-snippet friends)))

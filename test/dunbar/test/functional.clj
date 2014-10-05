@@ -42,8 +42,21 @@
   (map (comp first :content)
        (-> @state :enlive (html/select selector))))
 
+(defn first-text [selector]
+  (first (text selector)))
+
+(defn value [selector]
+  (map (comp :value :attrs)
+       (-> @state :enlive (html/select selector))))
+
+(defn first-value [selector]
+  (first (value selector)))
+
 (defn page-title []
   (first (text [:title])))
+
+(def firstname-field [[:input (html/attr-has :name "firstname")]])
+(def lastname-field [[:input (html/attr-has :name "lastname")]])
 
 (defn login-to-app []
   (facts "Can login to app"
@@ -56,17 +69,20 @@
   (facts "Adding a friend"
        (follow "Add")
        (page-title) => "Add friend"
-       (fill-in [[:input (html/attr-has :name "firstname")]] firstname)
-       (fill-in [[:input (html/attr-has :name "lastname")]] lastname)
+       (fill-in firstname-field firstname)
+       (fill-in lastname-field lastname)
        (press "Add")))
 
 (facts "Creating a friend"
        (start-session (make-app (new-test-db)))
        (login-to-app)
        (fact "Creating an invalid friend returns validation error"
-             (add-friend "" "Yoda")
+             (add-friend (u/string-of-length 100) "Yoda")
              (page-title) => "Add friend"
-             (text [:.validation-errors :li]) =not=> empty?)
+             (first-text [:.validation-errors :li]) =not=> empty?
+             (fact "form fields are repopulated with old data"
+                   (first-value firstname-field) => (u/string-of-length 100)
+                   (first-value lastname-field) => "Yoda"))
        (add-friend "Boba" "Fett")
        (add-friend "Darth" "Vadar")
        (first (text [:td.friend-name])) => "Boba Fett"

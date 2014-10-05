@@ -25,7 +25,7 @@
 
 (defn friend-form
   [request]
-  (html-response (v/friend-form-page "Add friend" (navigation) {})))
+  (html-response (v/friend-form-page "Add friend" (navigation) {} {})))
 
 (defn friend-list [db request]
   (let [friends (s/load-friends db (username request))]
@@ -41,7 +41,7 @@
                                          #(s/add-friend % db (username request)))]
     (if success
       (redirect (r/path :friend-list))
-      (html-response (v/friend-form-page "Add friend" (navigation) (:errors state))))))
+      (html-response (v/friend-form-page "Add friend" (navigation) (:params request) (:errors state))))))
 
 (defn login [request]
   (let [username (get-in request [:params :username])]
