@@ -22,12 +22,19 @@
        (fact "Can successfully add a friend"
              (let [db (new-test-db)
                    request (logged-in-request "John" {:firstname "Joe" :lastname "Bloggs"
-                                                      :notes "Some notes on Joe"})]
+                                                      :notes "Some notes on Joe"
+                                                      :meet-freq "28"})]
                (c/add-friend db request) => (every-checker
                                              (has-status? 302)
                                              (has-redirect-location? "/friends"))
                (query db "friends" {}) => [{:user "John" :firstname "Joe" :lastname "Bloggs"
-                                            :notes "Some notes on Joe"}])))
+                                            :notes "Some notes on Joe"
+                                            :meet-freq 28}]))
+       (fact "Friend not added if invalid"
+             (let [db (new-test-db)
+                   request (logged-in-request "John" {})]
+               (c/add-friend db request) => (has-status? 200)
+               (query db "friends" {}) => [])))
 
 (facts "Friend list"
        (fact "Friends in database are shown on page"

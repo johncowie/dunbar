@@ -53,6 +53,13 @@
   (map (comp :value :attrs)
        (-> @state :enlive (html/select selector))))
 
+(defn selected-value [selector]
+  (first (map (comp :value :attrs)
+              (-> @state
+                  :enlive
+                  (html/select selector)
+                  (html/select [[:option (html/attr= :selected "selected")]])))))
+
 (defn first-value [selector]
   (first (value selector)))
 

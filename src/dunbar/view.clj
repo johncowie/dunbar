@@ -35,14 +35,18 @@
                           (html/substitute (validation-errors-snippet errors)))
   [[:input (html/attr= :name "firstname")]] (html/set-attr :value (:firstname posted-data))
   [[:input (html/attr= :name "lastname")]] (html/set-attr :value (:lastname posted-data))
-  [[:textarea (html/attr= :name "notes")]] (html/set-attr :value (:notes posted-data)))
+  [[:textarea (html/attr= :name "notes")]] (html/set-attr :value (:notes posted-data))
+  [[:select (html/attr= :name "meet-freq")] [:option (html/attr= :value (:meet-freq posted-data))]]
+  (html/set-attr :selected "selected"))
 
 (html/defsnippet friend-list-snippet "public/templates/index.html" [:#friend-list]
   [friends]
   [:table :tr.friend-row]
-  (html/clone-for [{:keys [firstname lastname notes]} friends]
+  (html/clone-for [{:keys [firstname lastname notes meet-freq]} friends]
                   [:tr.friend-row :.friend-name] (html/content (str firstname " " lastname))
-                  [:tr.friend-row :.friend-notes] (html/content notes)))
+                  [:tr.friend-row :.friend-notes] (html/content notes)
+                  [:tr.friend-row :.friend-meet-freq] (html/content (str meet-freq))
+                  ))
 
 (defn- page
   [title nav-links content]

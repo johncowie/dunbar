@@ -31,13 +31,15 @@
   (let [friends (s/load-friends db (username request))]
     (html-response (v/friend-list-page "My friends" (navigation) friends))))
 
-(defn marshall-params [params]
-  (select-keys params [:firstname :lastname :notes]))
+(defn marshall-to-db [params]
+  (->
+   (select-keys params [:firstname :lastname :notes :meet-freq])
+   (update-in [:meet-freq] #(Integer/parseInt %))))
 
 (defn add-friend [db request]
   (let [{:keys [state success]} (error-> (:params request)
-                                         (partial marshall-params)
                                          validate-with-translations
+                                         marshall-to-db
                                          #(s/add-friend % db (username request)))]
     (if success
       (redirect (r/path :friend-list))

@@ -4,3 +4,9 @@ firstname:
 lastname:
   mandatory: "Last name is required"
   max-length: "Last name can not be longer than 50 characters"
+notes:
+  max-length: "Notes can not be longer than 1000 characters"
+meet-freq:
+  mandatory: "Meeting frequency is required"
+  numeric: "Meeting frequency should be a numeric value"
+  positive: "Meeting frequency should be positive"
