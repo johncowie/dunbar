@@ -32,7 +32,7 @@
     (html-response (v/friend-list-page "My friends" (navigation) friends))))
 
 (defn marshall-params [params]
-  (select-keys params [:firstname :lastname]))
+  (select-keys params [:firstname :lastname :notes]))
 
 (defn add-friend [db request]
   (let [{:keys [state success]} (error-> (:params request)

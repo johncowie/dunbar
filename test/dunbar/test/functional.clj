@@ -57,6 +57,8 @@
 
 (def firstname-field [[:input (html/attr-has :name "firstname")]])
 (def lastname-field [[:input (html/attr-has :name "lastname")]])
+(def notes-field [[:textarea (html/attr-has :name "notes")]])
+
 
 (defn login-to-app []
   (facts "Can login to app"
@@ -65,25 +67,30 @@
          (press "Login")
          (page-title) => "My friends"))
 
-(defn add-friend [firstname lastname]
+(defn add-friend [firstname lastname notes]
   (facts "Adding a friend"
        (follow "Add")
        (page-title) => "Add friend"
        (fill-in firstname-field firstname)
        (fill-in lastname-field lastname)
+       (fill-in notes-field notes)
        (press "Add")))
+
 
 (facts "Creating a friend"
        (start-session (make-app (new-test-db)))
        (login-to-app)
        (fact "Creating an invalid friend returns validation error"
-             (add-friend (u/string-of-length 100) "Yoda")
+             (add-friend (u/string-of-length 100) "Yoda" "Some notes")
              (page-title) => "Add friend"
              (first-text [:.validation-errors :li]) =not=> empty?
              (fact "form fields are repopulated with old data"
                    (first-value firstname-field) => (u/string-of-length 100)
-                   (first-value lastname-field) => "Yoda"))
-       (add-friend "Boba" "Fett")
-       (add-friend "Darth" "Vadar")
+                   (first-value lastname-field) => "Yoda"
+                   (first-value notes-field) => "Some notes"))
+       (add-friend "Boba" "Fett" "Bounty Hunter")
+       (add-friend "Darth" "Vadar" "Breathy")
        (first (text [:td.friend-name])) => "Boba Fett"
-       (second (text [:td.friend-name])) => "Darth Vadar")
+       (first (text [:td.friend-notes])) => "Bounty Hunter"
+       (second (text [:td.friend-name])) => "Darth Vadar"
+       (second (text [:td.friend-notes])) => "Breathy")

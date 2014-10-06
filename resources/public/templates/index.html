@@ -40,10 +40,16 @@
           </div>
           <form method="POST">
             <h2>Add a friend</h2>
-            <label for="firstname">First name:</label>
-            <input type="text" name="firstname" />
-            <label for="lastname">Last name:</label>
-            <input type="text" name="lastname" />
+            <fieldset>
+              <label for="firstname">First name:</label>
+              <input type="text" name="firstname" />
+              <label for="lastname">Last name:</label>
+              <input type="text" name="lastname" />
+            </fieldset>
+            <fieldset>
+              <label for="notes">Notes:</label>
+              <textarea name="notes"></textarea>
+            </fieldset>
             <input type="submit" value="Add">
           </form>
         </div>
@@ -53,11 +59,11 @@
           <table>
             <tr>
               <th>Name</th>
-              <th>Last Seen</th>
+              <th>Notes</th>
             </tr>
             <tr class="friend-row">
               <td class="friend-name">Emma Hughes</td>
-              <td class="friend-last-seen">12 days ago</td>
+              <td class="friend-notes">Works for Platform</td>
             </tr>
           </table>
         </div>

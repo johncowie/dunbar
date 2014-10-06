@@ -34,14 +34,15 @@
   [:.validation-errors] (when-not (empty? errors)
                           (html/substitute (validation-errors-snippet errors)))
   [[:input (html/attr= :name "firstname")]] (html/set-attr :value (:firstname posted-data))
-  [[:input (html/attr= :name "lastname")]] (html/set-attr :value (:lastname posted-data)))
+  [[:input (html/attr= :name "lastname")]] (html/set-attr :value (:lastname posted-data))
+  [[:textarea (html/attr= :name "notes")]] (html/set-attr :value (:notes posted-data)))
 
 (html/defsnippet friend-list-snippet "public/templates/index.html" [:#friend-list]
   [friends]
   [:table :tr.friend-row]
-  (html/clone-for [{firstname :firstname lastname :lastname} friends]
+  (html/clone-for [{:keys [firstname lastname notes]} friends]
                   [:tr.friend-row :.friend-name] (html/content (str firstname " " lastname))
-                  [:tr.friend-row :.friend-last-seen] (html/content "Last seen not implemented yet")))
+                  [:tr.friend-row :.friend-notes] (html/content notes)))
 
 (defn- page
   [title nav-links content]

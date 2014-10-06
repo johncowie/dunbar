@@ -21,11 +21,13 @@
 (facts "Adding a friend"
        (fact "Can successfully add a friend"
              (let [db (new-test-db)
-                   request (logged-in-request "John" {:firstname "Joe" :lastname "Bloggs"})]
+                   request (logged-in-request "John" {:firstname "Joe" :lastname "Bloggs"
+                                                      :notes "Some notes on Joe"})]
                (c/add-friend db request) => (every-checker
                                              (has-status? 302)
                                              (has-redirect-location? "/friends"))
-               (query db "friends" {}) => [{:user "John" :firstname "Joe" :lastname "Bloggs"}])))
+               (query db "friends" {}) => [{:user "John" :firstname "Joe" :lastname "Bloggs"
+                                            :notes "Some notes on Joe"}])))
 
 (facts "Friend list"
        (fact "Friends in database are shown on page"
