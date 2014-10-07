@@ -29,6 +29,12 @@
   (html/clone-for [text (vals errors)]
                   [:li] (html/content (str text))))
 
+(def meet-freq-dropdown-values
+  [{:value "1" :text "day"}
+   {:value "7" :text "week"}
+   {:value "28" :text "month"}
+   {:value "365" :text "year"}])
+
 (html/defsnippet friend-form-snippet "public/templates/index.html" [:#friend-form]
   [posted-data errors]
   [:.validation-errors] (when-not (empty? errors)
@@ -36,6 +42,11 @@
   [[:input (html/attr= :name "firstname")]] (html/set-attr :value (:firstname posted-data))
   [[:input (html/attr= :name "lastname")]] (html/set-attr :value (:lastname posted-data))
   [[:textarea (html/attr= :name "notes")]] (html/set-attr :value (:notes posted-data))
+  [[:select (html/attr= :name "meet-freq")] [:option (html/but html/first-of-type)]] nil
+  [[:select (html/attr= :name "meet-freq")] [:option html/first-of-type]]
+  (html/clone-for [{value :value text :text} meet-freq-dropdown-values]
+                  [:option] (html/content text)
+                  [:option] (html/set-attr :value value))
   [[:select (html/attr= :name "meet-freq")] [:option (html/attr= :value (:meet-freq posted-data))]]
   (html/set-attr :selected "selected"))
 
