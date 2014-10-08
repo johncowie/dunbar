@@ -34,23 +34,33 @@ a:hover {
     background-color: #999999;
 }
 
+#topbar:after {
+    content:'';
+    display:block;
+    clear: both;
+}
+
 #navigation {
-    width: 600px;
-    background-color: #000099;
+    float: left;
 }
 
 #navigation-login {
-    width: 400px;
-    background-color: #009900;
+    float: right;
 }
 
 .topbar-links {
     display: inline-block;
     font-size: 1.0em;
     font-style: none;
+    padding: 20px;
+}
+
+.topbar-links ul {
+    padding: 0px;
+    margin: 0px;
 }
 
 .topbar-links li {
     display: inline-block;
-    margin: 10px;
+    margin: 0px 20px 0px 20px;
 }
