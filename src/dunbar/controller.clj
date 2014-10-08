@@ -21,7 +21,7 @@
 (defn four-o-four [request] (not-found "Nothing was found :-("))
 
 (defn login-form [request]
-  (html-response (v/login-form-page "Login" (navigation))))
+  (html-response (v/login-form-page "Login")))
 
 (defn friend-form
   [request]

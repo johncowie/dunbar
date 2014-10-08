@@ -6,7 +6,7 @@
    :lastname "Hughes"
    :freq-to-see 30
    :birthday [1981 8 23]
-   :last-seen [2014 8 30] })
+   :last-seen [2014 8 30]})
 
 
 (def sample-user

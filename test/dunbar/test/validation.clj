@@ -46,6 +46,8 @@
              (validate {:firstname "Joe" :lastname "Bloggs" :notes "Some notes" :meet-freq "2"})
              => {:firstname "Joe" :lastname "Bloggs" :notes "Some notes" :meet-freq "2"}))
 
+; Searching for missing translations
+
 (defn generate-rubbish-value []
   (let [r (rand)]
     (cond (< r 0.3) nil

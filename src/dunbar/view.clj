@@ -6,10 +6,18 @@
   (reduce str (html/emit* snippet)))
 
 (html/deftemplate index-page-template "public/templates/index.html"
-  [title navigation-snippet content-snippet]
+  [title navigation-snippet navigation-login-snippet content-snippet]
   [:title] (html/content title)
-  [:#navigation] (html/html-content (render-snippet navigation-snippet))
+  [:#navigation] (html/html-content (render-snippet navigation-snippet)) ; TODO replace with html/substitute?
+  [:#navigation-login] (html/html-content (render-snippet navigation-login-snippet))
   [:#content] (html/html-content (render-snippet content-snippet)))
+
+; TODO combine these two parts into one top-bar snippet
+(html/defsnippet navigation-login-snippet "public/templates/index.html" [:#navigation-login]
+  [logged-in?]
+  [:ul [:li html/first-of-type] :a] (html/content (if logged-in? "Logout" "Login"))
+  [:ul [:li html/first-of-type] :a] (html/set-attr :href (r/path (if logged-in? :logout :login)))
+  )
 
 (html/defsnippet navigation-snippet "public/templates/index.html" [:#navigation]
   [nav-links]
@@ -33,7 +41,7 @@
   [{:value "1" :text "day"}
    {:value "7" :text "week"}
    {:value "28" :text "month"}
-   {:value "365" :text "year"}])
+   {:value "365" :text "year"}])  ; TODO move this to models
 
 (html/defsnippet friend-form-snippet "public/templates/index.html" [:#friend-form]
   [posted-data errors]
@@ -60,14 +68,14 @@
                   ))
 
 (defn- page
-  [title nav-links content]
-  (reduce str (index-page-template title (navigation-snippet nav-links) content)))
+  [title nav-links logged-in? content]
+  (reduce str (index-page-template title (navigation-snippet nav-links) (navigation-login-snippet logged-in?) content)))
 
-(defn login-form-page [title nav]
-  (page title nav (login-form-snippet)))
+(defn login-form-page [title]
+  (page title [] false (login-form-snippet)))
 
 (defn friend-form-page [title nav posted-data errors]
-  (page title nav (friend-form-snippet posted-data errors)))
+  (page title nav true (friend-form-snippet posted-data errors)))
 
 (defn friend-list-page [title nav friends]
-  (page title nav (friend-list-snippet friends)))
+  (page title nav true (friend-list-snippet friends)))
