@@ -2,15 +2,16 @@
   (:require [net.cgrand.enlive-html :as html]
             [dunbar.routes :as r]))
 
-(defn- render-snippet [snippet]
-  (reduce str (html/emit* snippet)))
+(defn css-select [s]
+  [(keyword s)]
+  )
 
 (html/deftemplate index-page-template "public/templates/index.html"
   [title navigation-snippet navigation-login-snippet content-snippet]
   [:title] (html/content title)
-  [:#navigation] (html/html-content (render-snippet navigation-snippet)) ; TODO replace with html/substitute?
-  [:#navigation-login] (html/html-content (render-snippet navigation-login-snippet))
-  [:#content] (html/html-content (render-snippet content-snippet)))
+  [:#navigation] (html/substitute navigation-snippet)
+  [:#navigation-login] (html/substitute navigation-login-snippet)
+  [:#content] (html/content content-snippet))
 
 ; TODO combine these two parts into one top-bar snippet
 (html/defsnippet navigation-login-snippet "public/templates/index.html" [:#navigation-login]
@@ -61,11 +62,20 @@
 (html/defsnippet friend-list-snippet "public/templates/index.html" [:#friend-list]
   [friends]
   [:table :tr.friend-row]
-  (html/clone-for [{:keys [firstname lastname notes meet-freq]} friends]
-                  [:tr.friend-row :.friend-name] (html/content (str firstname " " lastname))
+  (html/clone-for [{:keys [firstname lastname notes meet-freq id]} friends]
+                  [:tr.friend-row :.friend-name :a] (html/content (str firstname " " lastname))
+                  [:tr.friend-row :.friend-name :a] (html/set-attr :href (r/path :friend-details :id id))
                   [:tr.friend-row :.friend-notes] (html/content notes)
                   [:tr.friend-row :.friend-meet-freq] (html/content (str meet-freq))
                   ))
+
+(html/defsnippet friend-details-snippet "public/templates/index.html" [:#friend-details]
+  [{:keys [firstname lastname meet-freq notes]}]
+  [:#friend-details-name] (html/content (str firstname " " lastname))
+  [:#friend-details-meet-freq-firstname] (html/content firstname)
+  [:#friend-details-meet-freq] (html/content (str meet-freq))
+  [:#friend-details-notes] (html/content notes)
+  )
 
 (defn- page
   [title nav-links logged-in? content]
@@ -79,3 +89,6 @@
 
 (defn friend-list-page [title nav friends]
   (page title nav true (friend-list-snippet friends)))
+
+(defn friend-details-page [title nav friend]
+  (page title nav true (friend-details-snippet friend)))

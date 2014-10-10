@@ -4,9 +4,20 @@
     <link rel="stylesheet" type="text/css" href="../css/style.css" />
   </head>
   <body>
-    <div id="container">
-      <div id="topbar">
-        <div id="navigation" class="topbar-links">
+      <div class="banner header-list">
+        <div class="container">
+          <div class="logo left">
+            DUNBAR
+          </div>
+          <div id="navigation-login" class="right">
+            <ul>
+              <li><a href="#">Login</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div id="navigation" class="header-list navigation">
+        <div class="container">
           <ul>
             <li><a href="#">Home</a></li>
             <li><a href="#">Somewhere</a></li>
@@ -14,13 +25,8 @@
             <li><a href="#">Link2</a></li>
           </ul>
         </div>
-        <div id="navigation-login" class="topbar-links">
-          <ul>
-            <li><a href="#">Login</a></li>
-          <ul>
-        </div>
       </div>
-      <div id="content">
+      <div id="content" class="container">
         <div id="login">
           <form method="POST">
             <h2>Login</h2>
@@ -70,14 +76,24 @@
               <th>Notes</th>
             </tr>
             <tr class="friend-row">
-              <td class="friend-name">Emma Hughes</td>
+              <td class="friend-name">
+                <a href="#">Emma Hughes</href>
+              </td>
               <td class="friend-meet-freq">999</td>
               <td class="friend-notes">Works for Platform</td>
             </tr>
           </table>
         </div>
         <hr/>
+        <div id="friend-details">
+          <h2 id="friend-details-name">Darth Vadar</h2>
+          <h3>I want to see <span id="friend-details-meet-freq-firstname">Darth</span> every <span id="friend-details-meet-freq">20</span> days.</h3>
+          <h3>Notes</h3>
+          <p id="friend-details-notes">
+            Has a penchent for building Death Stars and choking people. To be honest I'm not entirely sure I should be friends with him anymore...
+          </p>
+        </div>
+        <hr/>
       </div>
-    </div>
   </body>
 </html>

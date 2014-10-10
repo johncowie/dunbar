@@ -17,6 +17,20 @@ a:hover {
     border: 1px solid #999999;
 }
 
+#friend-list th {
+    text-align: left;
+}
+
+.friend-name {
+    width: 200px;
+}
+.friend-meet-freq {
+    width: 200px;
+}
+.friend-notes {
+    width: 400px;
+}
+
 .validation-errors {
     border: 2px solid #990000;
     display: block;
@@ -24,43 +38,51 @@ a:hover {
     color: #990000;
 }
 
-#content {
+.container {
     width: 1000px;
     margin: 0px auto 0px auto;
 }
 
-#topbar {
-    display: block;
+.logo {
+    font-size: 1.3em;
+    color: #ffff00;
+}
+
+.banner {
+    background-color: #777777;
+}
+
+.navigation {
     background-color: #999999;
 }
 
-#topbar:after {
+.header-list {
+    display: block;
+    font-size: 1.0em;
+    font-style: none;
+    padding: 20px 0px 20px 0px;
+}
+
+.header-list ul {
+    padding: 0px;
+    margin: 0px;
+}
+
+.header-list li {
+    display: inline-block;
+    margin: 0px 20px 0px 0px;
+}
+
+.banner:after {
     content:'';
     display:block;
     clear: both;
 }
 
-#navigation {
+.left {
     float: left;
 }
 
-#navigation-login {
+.right {
     float: right;
-}
-
-.topbar-links {
-    display: inline-block;
-    font-size: 1.0em;
-    font-style: none;
-    padding: 20px;
-}
-
-.topbar-links ul {
-    padding: 0px;
-    margin: 0px;
-}
-
-.topbar-links li {
-    display: inline-block;
-    margin: 0px 20px 0px 20px;
 }

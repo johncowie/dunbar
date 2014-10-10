@@ -35,9 +35,19 @@
 (defn check-friend-row [n name notes meet-freq]
   (facts "Checking friend row"
          (page-title) => "My friends"
-         (nth (text [:td.friend-name]) n) => name
+         (nth (text [:td.friend-name :a]) n) => name
          (nth (text [:td.friend-notes]) n) => notes
          (nth (text [:td.friend-meet-freq]) n) => meet-freq))
+
+(defn check-friend-details [firstname lastname notes meet-freq]
+  (facts "Checking friend details"
+         (follow "Friends")
+         (follow (str firstname " " lastname))
+         (page-title) => (str firstname " " lastname)
+         (first-text [:#friend-details-name]) => (str firstname " " lastname)
+         (first-text [:#friend-details-meet-freq-firstname]) => firstname
+         (first-text [:#friend-details-meet-freq]) => meet-freq
+         (first-text [:#friend-details-notes]) => notes))
 
 (facts "Creating a friend"
        (start-session (make-app (new-test-db)))
@@ -55,4 +65,7 @@
        (add-friend "Boba" "Fett" "Bounty Hunter" "7")
        (add-friend "Darth" "Vadar" "Breathy" "7")
        (check-friend-row 0 "Boba Fett" "Bounty Hunter" "7")
-       (check-friend-row 1 "Darth Vadar" "Breathy" "7"))
+       (check-friend-row 1 "Darth Vadar" "Breathy" "7")
+       (check-friend-details "Boba" "Fett" "Bounty Hunter" "7")
+       (check-friend-details "Darth" "Vadar" "Breathy" "7")
+       )

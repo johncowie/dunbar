@@ -29,7 +29,8 @@
                                              (has-redirect-location? "/friends"))
                (query db "friends" {}) => [{:user "John" :firstname "Joe" :lastname "Bloggs"
                                             :notes "Some notes on Joe"
-                                            :meet-freq 28}]))
+                                            :meet-freq 28
+                                            :id "joe-bloggs"}]))
        (fact "Friend not added if invalid"
              (let [db (new-test-db)
                    request (logged-in-request "John" {})]
@@ -40,9 +41,9 @@
        (fact "Friends in database are shown on page"
              (let [db (new-test-db)
                    request (logged-in-request "John" {})]
-                   (save! db "friends" {:user "John" :firstname "Jimi" :lastname "Hendrix"})
-                   (save! db "friends" {:user "John" :firstname "Jimmy" :lastname "Page"})
-                   (save! db "friends" {:user "Jack" :firstname "Jack" :lastname "White"})
+                   (save! db "friends" {:user "John" :firstname "Jimi" :lastname "Hendrix" :id "jimi-hendrix"})
+                   (save! db "friends" {:user "John" :firstname "Jimmy" :lastname "Page" :id "jimmy-page"})
+                   (save! db "friends" {:user "Jack" :firstname "Jack" :lastname "White" :id "jack-white"})
                    (c/friend-list db request) => (every-checker
                                                   (has-status? 200)
                                                   (body-contains? "Jimi Hendrix")

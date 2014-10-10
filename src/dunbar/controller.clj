@@ -31,16 +31,27 @@
   (let [friends (s/load-friends db (username request))]
     (html-response (v/friend-list-page "My friends" (navigation) friends))))
 
-(defn marshall-to-db [params]
+(defn friend-details [db request]
+  (let [friend (s/load-friend db (username request) (get-in request [:params :id]))]
+    (html-response (v/friend-details-page (str (:firstname friend) " " (:lastname friend)) (navigation) friend))))
+
+(defn generate-id [firstname lastname]
+  (str (clojure.string/lower-case firstname)
+       "-"
+       (clojure.string/lower-case lastname)))
+
+(defn marshall-to-db [params username]
   (->
    (select-keys params [:firstname :lastname :notes :meet-freq])
-   (update-in [:meet-freq] #(Integer/parseInt %))))
+   (update-in [:meet-freq] #(Integer/parseInt %))
+   (assoc :id (generate-id (:firstname params) (:lastname params)))
+   (assoc :user username)))
 
 (defn add-friend [db request]
   (let [{:keys [state success]} (error-> (:params request)
                                          validate-with-translations
-                                         marshall-to-db
-                                         #(s/add-friend % db (username request)))]
+                                         #(marshall-to-db % (username request))
+                                         #(s/add-friend % db))]
     (if success
       (redirect (r/path :friend-list))
       (html-response (v/friend-form-page "Add friend" (navigation) (:params request) (:errors state))))))
@@ -74,7 +85,8 @@
   (->
    {:add-friend-form friend-form
     :add-friend (partial add-friend db)
-    :friend-list (partial friend-list db)}
+    :friend-list (partial friend-list db)
+    :friend-details (partial friend-details db)}
    (map-over-vals wrap-secure)))
 
 (defn open-handlers []

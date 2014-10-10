@@ -13,6 +13,9 @@
 (defn end-session []
   (swap! state (constantly {})))
 
+(defn print-state []
+  (prn @state))
+
 (defn follow-redirect []
   (sfn k/follow-redirect))
 
