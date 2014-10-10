@@ -65,7 +65,6 @@
   (html/clone-for [{:keys [firstname lastname notes meet-freq id]} friends]
                   [:tr.friend-row :.friend-name :a] (html/content (str firstname " " lastname))
                   [:tr.friend-row :.friend-name :a] (html/set-attr :href (r/path :friend-details :id id))
-                  [:tr.friend-row :.friend-notes] (html/content notes)
                   [:tr.friend-row :.friend-meet-freq] (html/content (str meet-freq))
                   ))
 

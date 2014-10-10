@@ -32,11 +32,10 @@
        (choose meet-freq-select meet-freq)
        (press "Add")))
 
-(defn check-friend-row [n name notes meet-freq]
+(defn check-friend-row [n name meet-freq]
   (facts "Checking friend row"
          (page-title) => "My friends"
          (nth (text [:td.friend-name :a]) n) => name
-         (nth (text [:td.friend-notes]) n) => notes
          (nth (text [:td.friend-meet-freq]) n) => meet-freq))
 
 (defn check-friend-details [firstname lastname notes meet-freq]
@@ -64,8 +63,8 @@
                    ))
        (add-friend "Boba" "Fett" "Bounty Hunter" "7")
        (add-friend "Darth" "Vadar" "Breathy" "7")
-       (check-friend-row 0 "Boba Fett" "Bounty Hunter" "7")
-       (check-friend-row 1 "Darth Vadar" "Breathy" "7")
+       (check-friend-row 0 "Boba Fett" "7")
+       (check-friend-row 1 "Darth Vadar" "7")
        (check-friend-details "Boba" "Fett" "Bounty Hunter" "7")
        (check-friend-details "Darth" "Vadar" "Breathy" "7")
        )
