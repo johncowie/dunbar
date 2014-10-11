@@ -1,6 +1,9 @@
 (ns dunbar.test.test-components
   (:require [dunbar.mongo :refer [DB save! query]]
+            [dunbar.clock :refer [Clock now]]
             [midje.sweet :refer :all]))
+
+;;;;;; DB ;;;;;;
 
 (defn entry-match [record [k v]]
   (= (get record k) v))
@@ -29,3 +32,13 @@
                 (save! db "apples" {:id 2 :type "granny-smith"})
                 (query db "apples" {:type "braeburn"}) => [{:id 1 :type "braeburn"}]
                 (query db "apples" {:type "granny-smith"}) => [{:id 2 :type "granny-smith"}])))
+
+;;;;;;; Clock ;;;;;;;;;;
+
+(defrecord TestClock [constant-time]
+  Clock
+  (now [this]
+    constant-time))
+
+(defn new-test-clock [constant-time]
+  (TestClock. constant-time))
