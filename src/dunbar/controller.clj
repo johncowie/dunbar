@@ -5,7 +5,7 @@
             [dunbar.store :as s]
             [dunbar.validation :refer [validate validate-with-translations]]
             [dunbar.logic :refer [error->]]
-            [dunbar.middleware :refer [wrap-error-handling]]))
+            [dunbar.clock :refer [now]]))
 
 (defn username [request]
   (get-in request [:session :username]))
@@ -39,17 +39,18 @@
        "-"
        (clojure.string/lower-case lastname)))
 
-(defn marshall-to-db [params username]
+(defn marshall-to-db [params username clock]
   (->
    (select-keys params [:firstname :lastname :notes :meet-freq])
    (update-in [:meet-freq] #(Integer/parseInt %))
    (assoc :id (generate-id (:firstname params) (:lastname params)))
-   (assoc :user username)))
+   (assoc :user username)
+   (assoc :created-at (now clock))))
 
-(defn add-friend [db request]
+(defn add-friend [db clock request]
   (let [{:keys [state success]} (error-> (:params request)
                                          validate-with-translations
-                                         #(marshall-to-db % (username request))
+                                         #(marshall-to-db % (username request) clock)
                                          #(s/add-friend % db))]
     (if success
       (redirect (r/path :friend-list))
@@ -86,10 +87,10 @@
 (defn map-over-vals [m & fs]
   (into {} (map (fn [[k v]] [k (reduce #(%2 %1) v fs)]) m)))
 
-(defn secure-handlers [db]
+(defn secure-handlers [db clock]
   (->
    {:add-friend-form friend-form
-    :add-friend (partial add-friend db)
+    :add-friend (partial add-friend db clock)
     :friend-list (partial friend-list db)
     :friend-details (partial friend-details db)}
    (map-over-vals wrap-secure)))
@@ -100,5 +101,5 @@
    :logout logout
    :login-form login-form})
 
-(defn handlers [db]
-  (merge (secure-handlers db) (open-handlers)))
+(defn handlers [db clock]
+  (merge (secure-handlers db clock) (open-handlers)))

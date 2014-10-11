@@ -14,15 +14,15 @@
             [dunbar.routes :refer [routes]]
             [com.stuartsierra.component :as component]))
 
-(defn look-up-handler [db]
+(defn look-up-handler [db clock]
   (fn [id]
     (or
-     (id (c/handlers db))
+     (id (c/handlers db clock))
      (constantly nil))))
 
 (defn make-app [db clock]
   (->
-   (make-handler routes (look-up-handler db))
+   (make-handler routes (look-up-handler db clock))
     wrap-session
     wrap-keyword-params
     wrap-nested-params

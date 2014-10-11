@@ -2,7 +2,7 @@
   (:require [midje.sweet :refer :all]
             [dunbar.mongo :refer [save! query]]
             [dunbar.controller :as c]
-            [dunbar.test.test-components :refer [new-test-db]]))
+            [dunbar.test.test-components :refer [new-test-db new-test-clock]]))
 
 (defn logged-in-request [username params]
   {:session {:username username}
@@ -21,20 +21,22 @@
 (facts "Adding a friend"
        (fact "Can successfully add a friend"
              (let [db (new-test-db)
+                   clock (new-test-clock 76)
                    request (logged-in-request "John" {:firstname "Joe" :lastname "Bloggs"
                                                       :notes "Some notes on Joe"
                                                       :meet-freq "28"})]
-               (c/add-friend db request) => (every-checker
+               (c/add-friend db clock request) => (every-checker
                                              (has-status? 302)
                                              (has-redirect-location? "/friends"))
                (query db "friends" {}) => [{:user "John" :firstname "Joe" :lastname "Bloggs"
                                             :notes "Some notes on Joe"
                                             :meet-freq 28
-                                            :id "joe-bloggs"}]))
+                                            :id "joe-bloggs" :created-at 76}]))
        (fact "Friend not added if invalid"
              (let [db (new-test-db)
+                   clock (new-test-clock 0)
                    request (logged-in-request "John" {})]
-               (c/add-friend db request) => (has-status? 200)
+               (c/add-friend db clock request) => (has-status? 200)
                (query db "friends" {}) => [])))
 
 (facts "Friend list"
@@ -51,7 +53,7 @@
                                                   (complement (body-contains? "Jack White"))))))
 
 (facts "About secured routes"
-       (let [handlers (c/handlers (new-test-db))]
+       (let [handlers (c/handlers (new-test-db) (new-test-clock 0))]
          (fact "Must be logged in to view add-friend-form"
                ((:add-friend-form handlers) (logged-in-request "J" {})) =not=> (has-redirect-location? "/login")
                ((:add-friend-form handlers) {}) => (has-redirect-location? "/login"))
@@ -60,4 +62,8 @@
                ((:add-friend handlers) {}) => (has-redirect-location? "/login"))
          (fact "Must be logged in to view friend list"
                ((:friend-list handlers) (logged-in-request "J" {})) =not=> (has-redirect-location? "/login")
-               ((:friend-list handlers) {}) => (has-redirect-location? "/login"))))
+               ((:friend-list handlers) {}) => (has-redirect-location? "/login"))
+         (fact "Must be logged in to view friend details page"
+               ((:friend-list handlers) (logged-in-request "J" {})) =not=> (has-redirect-location? "/login")
+               ((:friend-list handlers) {}) => (has-redirect-location? "/login"))
+         ))
