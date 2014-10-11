@@ -4,7 +4,9 @@
             [dunbar.handler :refer [make-app]]
             [dunbar.test.test-components :refer [new-test-db new-test-clock]]
             [dunbar.test.test-utils :as u]
-            [net.cgrand.enlive-html :as html]))
+            [net.cgrand.enlive-html :as html]
+            [clj-time.coerce :as tc]
+            [clj-time.core :as t]))
 
 (defn test-app
   ([t] (make-app (new-test-db) (new-test-clock t)))
@@ -72,13 +74,13 @@
        (check-friend-details "Darth" "Vadar" "Breathy" "7"))
 
 (facts "About when you've just seen a friend"
-       (start-session (test-app 777))
+       (start-session (test-app (tc/to-long (t/date-time 2014 03 25))))
        (login-to-app)
        (add-friend "Anakin" "Skywalker" "a kid" "7")
        (follow "Friends")
        (press "Just seen them")
        (follow "Anakin Skywalker")
-       (first-text [:#friend-details-last-seen]) => "777")
+       (first-text [:#friend-details-last-seen]) => "25 MAR 2014")
 
 (facts "General hygiene stuff"
        (start-session (test-app))

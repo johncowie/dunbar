@@ -1,10 +1,17 @@
 (ns dunbar.view
   (:require [net.cgrand.enlive-html :as html]
-            [dunbar.routes :as r]))
+            [dunbar.routes :as r]
+            [clj-time.coerce :as time-coerce]
+            [clj-time.format :as time-format]))
+
+(def date-formatter (time-format/formatter "dd MMM YYYY"))
+
+(defn show-date [millis]
+  (clojure.string/upper-case
+     (time-format/unparse date-formatter (time-coerce/from-long millis))))
 
 (defn css-select [s]
-  [(keyword s)]
-  )
+  [(keyword s)])
 
 (def style-guide "public/templates/index.html")
 
@@ -85,7 +92,7 @@
   [:#friend-details-meet-freq-firstname] (html/content firstname)
   [:#friend-details-meet-freq] (html/content (str meet-freq))
   [:#friend-details-notes] (html/content notes)
-  [:#friend-details-last-seen] (html/content (str last-seen)))
+  [:#friend-details-last-seen] (html/content (show-date last-seen)))
 
 (html/defsnippet not-found-snippet style-guide [:#not-found] [])
 (html/defsnippet server-error-snippet style-guide [:#server-error] [])
