@@ -14,7 +14,8 @@
                  [clj-webdriver "0.6.0"]
                  [kerodon "0.4.0"]
                  [clj-http "1.0.0"]
-                 [clj-oauth2 "0.2.0"]]
+                 [clj-oauth2 "0.2.0"]
+                 [clj-time "0.8.0"]]
   :plugins [[lein-ring "0.8.11"]
             [lein-midje "3.1.1"]]
   :ring {:handler dunbar.system/lein-ring-handler
