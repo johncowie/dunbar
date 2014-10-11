@@ -13,22 +13,45 @@ a:hover {
     color: #990000;
 }
 
+#friend-list {
+    font-size: 1.0em;
+}
+
 #friend-list td {
     border: 1px solid #999999;
+    margin: 10x;
+    padding: 10px;
+    height: 40px;
 }
 
 #friend-list th {
     text-align: left;
 }
 
-.friend-name {
+#friend-list .friend-name {
     width: 200px;
 }
-.friend-meet-freq {
+#friend-list .friend-meet-freq {
     width: 200px;
 }
-.friend-notes {
+#friend-list .friend-notes {
     width: 400px;
+}
+
+#friend-list .friend-just-seen {
+    padding: 0px;
+}
+
+#friend-list form {
+    margin: 0px;
+}
+
+#friend-list button {
+    background-color: #ff7700;
+    height: 40px;
+    margin: 0px;
+    padding: 10px;
+    font-size: 1.0em;
 }
 
 .validation-errors {

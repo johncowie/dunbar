@@ -78,6 +78,9 @@
        (login-to-app)
        (add-friend "Anakin" "Skywalker" "a kid" "7")
        (follow "Friends")
+       (follow "Anakin Skywalker")
+       (first-text [:#friend-details-last-seen]) => "-"
+       (follow "Friends")
        (press "Just seen them")
        (follow "Anakin Skywalker")
        (first-text [:#friend-details-last-seen]) => "25 MAR 2014")

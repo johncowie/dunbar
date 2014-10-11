@@ -7,8 +7,11 @@
 (def date-formatter (time-format/formatter "dd MMM YYYY"))
 
 (defn show-date [millis]
-  (clojure.string/upper-case
-     (time-format/unparse date-formatter (time-coerce/from-long millis))))
+  (if millis
+    (-> date-formatter
+       (time-format/unparse (time-coerce/from-long millis))
+        clojure.string/upper-case)
+    "-"))
 
 (defn css-select [s]
   [(keyword s)])
@@ -77,9 +80,9 @@
                     (html/set-attr :href (r/path :friend-details :id id))
                   [:tr.friend-row :.friend-meet-freq]
                     (html/content (str meet-freq))
-                  [:tr.friend-row :.friend-just-seen [:input (html/attr= :type "hidden")]]
+                  [:tr.friend-row :.friend-just-seen :button]
                     (html/set-attr :value id)
-                  [:tr.friend-row :.friend-just-seen [:input (html/attr= :type "hidden")]]
+                  [:tr.friend-row :.friend-just-seen :button]
                     (html/set-attr :name "just-seen")
                   [:tr.friend-row :.friend-just-seen :form]
                     (html/set-attr :action (r/path :friend-list-update))
