@@ -3,7 +3,7 @@
   :url "http://example.com/FIXME"
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [ring "1.3.1"]
-                 [bidi "1.10.5-SNAPSHOT"]
+                 [bidi "1.10.5"]
                  [prismatic/schema "0.2.6"]
                  [traversy "0.2.0"]
                  [midje "1.6.3"]
