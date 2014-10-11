@@ -6,21 +6,15 @@
   [(keyword s)]
   )
 
-(html/deftemplate index-page-template "public/templates/index.html"
-  [title navigation-snippet navigation-login-snippet content-snippet]
-  [:title] (html/content title)
-  [:#navigation] (html/substitute navigation-snippet)
-  [:#navigation-login] (html/substitute navigation-login-snippet)
-  [:#content] (html/content content-snippet))
+(def style-guide "public/templates/index.html")
 
-; TODO combine these two parts into one top-bar snippet
-(html/defsnippet navigation-login-snippet "public/templates/index.html" [:#navigation-login]
+(html/defsnippet navigation-login-snippet style-guide [:#navigation-login]
   [logged-in?]
   [:ul [:li html/first-of-type] :a] (html/content (if logged-in? "Logout" "Login"))
   [:ul [:li html/first-of-type] :a] (html/set-attr :href (r/path (if logged-in? :logout :login)))
   )
 
-(html/defsnippet navigation-snippet "public/templates/index.html" [:#navigation]
+(html/defsnippet navigation-snippet style-guide [:#navigation]
   [nav-links]
   [:ul [:li (html/but html/first-of-type)]] nil ; remove all but first dummy link
   [:ul [:li html/first-of-type]]
@@ -28,10 +22,17 @@
                   [:li :a] (html/content text)
                   [:li :a] (html/set-attr :href href)))
 
-(html/defsnippet login-form-snippet "public/templates/index.html" [:#login]
+(html/deftemplate index-page-template style-guide
+  [title nav-links logged-in? content-snippet]
+  [:title] (html/content title)
+  [:#navigation] (when logged-in? (html/substitute (navigation-snippet nav-links)))
+  [:#navigation-login] (html/substitute (navigation-login-snippet logged-in?))
+  [:#content] (html/content content-snippet))
+
+(html/defsnippet login-form-snippet style-guide [:#login]
   [])
 
-(html/defsnippet validation-errors-snippet "public/templates/index.html" [:#friend-form :.validation-errors]
+(html/defsnippet validation-errors-snippet style-guide [:#friend-form :.validation-errors]
   [errors]
   [:ul [:li (html/but html/first-of-type)]] nil
   [:ul [:li html/first-of-type]]
@@ -44,7 +45,7 @@
    {:value "28" :text "month"}
    {:value "365" :text "year"}])  ; TODO move this to models
 
-(html/defsnippet friend-form-snippet "public/templates/index.html" [:#friend-form]
+(html/defsnippet friend-form-snippet style-guide [:#friend-form]
   [posted-data errors]
   [:.validation-errors] (when-not (empty? errors)
                           (html/substitute (validation-errors-snippet errors)))
@@ -59,7 +60,7 @@
   [[:select (html/attr= :name "meet-freq")] [:option (html/attr= :value (:meet-freq posted-data))]]
   (html/set-attr :selected "selected"))
 
-(html/defsnippet friend-list-snippet "public/templates/index.html" [:#friend-list]
+(html/defsnippet friend-list-snippet style-guide [:#friend-list]
   [friends]
   [:table :tr.friend-row]
   (html/clone-for [{:keys [firstname lastname notes meet-freq id]} friends]
@@ -68,17 +69,25 @@
                   [:tr.friend-row :.friend-meet-freq] (html/content (str meet-freq))
                   ))
 
-(html/defsnippet friend-details-snippet "public/templates/index.html" [:#friend-details]
+(html/defsnippet friend-details-snippet style-guide [:#friend-details]
   [{:keys [firstname lastname meet-freq notes]}]
   [:#friend-details-name] (html/content (str firstname " " lastname))
   [:#friend-details-meet-freq-firstname] (html/content firstname)
   [:#friend-details-meet-freq] (html/content (str meet-freq))
-  [:#friend-details-notes] (html/content notes)
-  )
+  [:#friend-details-notes] (html/content notes))
 
-(defn- page
+(html/defsnippet not-found-snippet style-guide [:#not-found] [])
+(html/defsnippet server-error-snippet style-guide [:#server-error] [])
+
+(defn page
   [title nav-links logged-in? content]
-  (reduce str (index-page-template title (navigation-snippet nav-links) (navigation-login-snippet logged-in?) content)))
+  (reduce str (index-page-template title nav-links logged-in? content)))
+
+(defn not-found-page [title nav username]
+  (page title nav username (not-found-snippet)))
+
+(defn server-error-page [title nav username]
+  (page title nav username (server-error-snippet)))
 
 (defn login-form-page [title]
   (page title [] false (login-form-snippet)))

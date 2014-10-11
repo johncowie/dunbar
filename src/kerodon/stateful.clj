@@ -25,6 +25,9 @@
     (when (and location (not (= status 200)))
       (do (follow-redirect) (auto-follow-redirect)))))
 
+(defn status []
+  (-> @state :response :status))
+
 (defn visit [path]
   (sfn k/visit path)
   (auto-follow-redirect))

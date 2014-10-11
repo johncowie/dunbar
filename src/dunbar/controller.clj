@@ -1,10 +1,11 @@
 (ns dunbar.controller
-  (:require [ring.util.response :refer [response not-found redirect content-type]]
+  (:require [ring.util.response :refer [status response not-found redirect content-type]]
             [dunbar.view :as v]
             [dunbar.routes :as r]
             [dunbar.store :as s]
             [dunbar.validation :refer [validate validate-with-translations]]
-            [dunbar.logic :refer [error->]]))
+            [dunbar.logic :refer [error->]]
+            [dunbar.middleware :refer [wrap-error-handling]]))
 
 (defn username [request]
   (get-in request [:session :username]))
@@ -17,8 +18,6 @@
   (-> (response body) (content-type "text/html")))
 
 (defn home [_] (redirect (r/path :friend-list)))
-
-(defn four-o-four [request] (not-found "Nothing was found :-("))
 
 (defn login-form [request]
   (html-response (v/login-form-page "Login")))
@@ -69,17 +68,23 @@
 
 (defn not-logged-in [request] (redirect (r/path :login-form)))
 
-(defn logged-in? [request]
-  (username request))
-
 (defn wrap-secure [handler]
   (fn [request]
-    (if (logged-in? request) (handler request) (not-logged-in request))))
+    (if (username request) (handler request) (not-logged-in request))))
 
-(defn apply-fn [v f] (f v))
+(defn error [request]
+  (-> (v/server-error-page "UH OH." (navigation) (username request))
+      html-response
+      (status 500)))
+
+(defn four-o-four [request]
+  (->
+   (v/not-found-page "Nothing to see here.." (navigation) (username request))
+   html-response
+   (status 404)))
 
 (defn map-over-vals [m & fs]
-  (into {} (map (fn [[k v]] [k (reduce apply-fn v fs)]) m)))
+  (into {} (map (fn [[k v]] [k (reduce #(%2 %1) v fs)]) m)))
 
 (defn secure-handlers [db]
   (->

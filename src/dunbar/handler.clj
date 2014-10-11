@@ -1,6 +1,6 @@
 (ns dunbar.handler
   (:require [ring.util.response :as rp]
-            [dunbar.middleware :refer [wrap-404]]
+            [dunbar.middleware :refer [wrap-404 wrap-error-handling]]
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.middleware.nested-params :refer [wrap-nested-params]]
             [ring.middleware.params :refer [wrap-params]]
@@ -30,7 +30,9 @@
     wrap-multipart-params
     wrap-content-type
     (wrap-resource "/public")
-    (wrap-404 c/four-o-four)))
+    (wrap-404 c/four-o-four)
+    (wrap-error-handling c/error)
+    ))
 
 (defrecord Handler [db]
   component/Lifecycle

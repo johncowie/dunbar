@@ -66,5 +66,18 @@
        (check-friend-row 0 "Boba Fett" "7")
        (check-friend-row 1 "Darth Vadar" "7")
        (check-friend-details "Boba" "Fett" "Bounty Hunter" "7")
-       (check-friend-details "Darth" "Vadar" "Breathy" "7")
-       )
+       (check-friend-details "Darth" "Vadar" "Breathy" "7"))
+
+(facts "General hygiene stuff"
+       (start-session (make-app (new-test-db)))
+       (fact "can generate 404 page"
+             (visit "/blah")
+             (page-title) => "Nothing to see here.."
+             (status) => 404)
+       (facts "navigation"
+              (fact "can only see navigation if logged in"
+                    (follow "Friends") => (throws Exception)
+                    (follow "Add") => (throws Exception)
+                    (login-to-app)
+                    (follow "Friends") =not=> (throws Exception)
+                    (follow "Add") =not=> (throws Exception))))
