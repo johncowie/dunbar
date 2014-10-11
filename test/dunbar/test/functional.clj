@@ -2,10 +2,11 @@
   (:require [midje.sweet :refer :all]
             [kerodon.stateful :refer :all]
             [dunbar.handler :refer [make-app]]
-            [dunbar.test.test-components :refer [new-test-db]]
+            [dunbar.test.test-components :refer [new-test-db new-test-clock]]
             [dunbar.test.test-utils :as u]
-            [net.cgrand.enlive-html :as html]
-            ))
+            [net.cgrand.enlive-html :as html]))
+
+(defn test-app [] (make-app (new-test-db) (new-test-clock 0)))
 
 (defn input-selector [tag name]
   [[tag (html/attr-has :name name)]])
@@ -49,7 +50,7 @@
          (first-text [:#friend-details-notes]) => notes))
 
 (facts "Creating a friend"
-       (start-session (make-app (new-test-db)))
+       (start-session (test-app))
        (login-to-app)
        (fact "Creating an invalid friend returns validation error"
              (add-friend (u/string-of-length 100) "Yoda" "Some notes" "7")
@@ -69,7 +70,7 @@
        (check-friend-details "Darth" "Vadar" "Breathy" "7"))
 
 (facts "General hygiene stuff"
-       (start-session (make-app (new-test-db)))
+       (start-session (test-app))
        (fact "can generate 404 page"
              (visit "/blah")
              (page-title) => "Nothing to see here.."

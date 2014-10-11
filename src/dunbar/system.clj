@@ -2,10 +2,10 @@
   (:require [com.stuartsierra.component :as component]
             [dunbar.handler :refer [new-web-server new-handler]]
             [dunbar.mongo :refer [new-mongo-db]]
+            [dunbar.clock :refer [new-joda-clock]]
             [dunbar.config :refer [load-config]]
             [dunbar.test.test-components :refer [new-test-db]])
-  (:gen-class)
-  )
+  (:gen-class))
 
 (def system (atom {}))
 
@@ -13,7 +13,8 @@
   (let [config (load-config config-file)]
     (component/system-map
      :db (new-mongo-db config)
-     :handler (component/using (new-handler) [:db])
+     :clock (new-joda-clock)
+     :handler (component/using (new-handler) [:db :clock])
      :webserver (component/using (new-web-server config) [:handler]))))
 
 (defn start [system-map]

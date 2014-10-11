@@ -20,7 +20,7 @@
      (id (c/handlers db))
      (constantly nil))))
 
-(defn make-app [db]
+(defn make-app [db clock]
   (->
    (make-handler routes (look-up-handler db))
     wrap-session
@@ -31,13 +31,12 @@
     wrap-content-type
     (wrap-resource "/public")
     (wrap-404 c/four-o-four)
-    (wrap-error-handling c/error)
-    ))
+    (wrap-error-handling c/error)))
 
-(defrecord Handler [db]
+(defrecord Handler [db clock]
   component/Lifecycle
   (start [this]
-    (assoc this :handle (make-app db)))
+    (assoc this :handle (make-app db clock)))
   (stop [this]
     (dissoc this :handle)))
 
