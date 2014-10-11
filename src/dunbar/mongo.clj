@@ -7,7 +7,8 @@
   (save! [this table record])
   (query [this table query])
   (query-one [this table query])
-  (delete! [this table query]))
+  (delete! [this table query])
+  (update! [this table query record]))
 
 (defn init-db [this host port db-name]
   (let [connection (mongo/connect {:host host :port port})]
@@ -35,6 +36,8 @@
   (query-one [this table query]
     (throw (Exception. "Implement me")))
   (delete! [this table query]
+    (throw (Exception. "Implement me")))
+  (update! [this table query record]
     (throw (Exception. "Implement me"))))
 
 (defn new-mongo-db [{{host :host port :port db-name :db} :mongo}]

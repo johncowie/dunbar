@@ -1,5 +1,5 @@
 (ns dunbar.test.test-components
-  (:require [dunbar.mongo :refer [DB save! query]]
+  (:require [dunbar.mongo :refer [DB save! query update!]]
             [dunbar.clock :refer [Clock now]]
             [midje.sweet :refer :all]))
 
@@ -11,6 +11,7 @@
 (defn query-match [record q]
   (reduce #(and %1 (entry-match record %2)) true q))
 
+
 (defrecord TestDB [db-atom]
   DB
   (save! [this table record]
@@ -20,7 +21,9 @@
   (query-one [this table query]
     (throw (Exception. "Implement me")))
   (delete! [this table query]
-    (throw (Exception. "Implement me"))))
+    (throw (Exception. "Implement me")))
+  (update! [this table query record]
+    (swap! db-atom (fn [db] (update-in db [table] (fn [table] (map #(if (query-match % query) record %) table)))))))
 
 (defn new-test-db []
   (TestDB. (atom {})))
@@ -31,7 +34,14 @@
                 (save! db "apples" {:id 1 :type "braeburn"})
                 (save! db "apples" {:id 2 :type "granny-smith"})
                 (query db "apples" {:type "braeburn"}) => [{:id 1 :type "braeburn"}]
-                (query db "apples" {:type "granny-smith"}) => [{:id 2 :type "granny-smith"}])))
+                (query db "apples" {:type "granny-smith"}) => [{:id 2 :type "granny-smith"}]))
+       (facts "updating"
+              (let [db (new-test-db)]
+                (save! db "apples" {:id 1 :type "blue"})
+                (save! db "apples" {:id 2 :type "green"})
+                (update! db "apples" {:id 1} {:id 1 :type "red"})
+                (query db "apples" {:id 1}) => [{:id 1 :type "red"}]
+                (query db "apples" {:id 2}) => [{:id 2 :type "green"}])))
 
 ;;;;;;; Clock ;;;;;;;;;;
 

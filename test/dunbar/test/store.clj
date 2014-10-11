@@ -18,6 +18,12 @@
                                            {:firstname "a" :lastname "c" :user "x"}
                                            {:firstname "B" :lastname "A" :user "x"}])))
 
+(fact "Can update a friend"
+      (let [db (new-test-db)]
+        (s/add-friend {:firstname "Bill" :lastname "Haley" :id "bill-haley" :user "x"} db)
+        (s/update-friend {:firstname "Bill" :lastname "Kill" :id "bill-haley" :user "x"} db)
+        (s/load-friend db "x" "bill-haley") => {:firstname "Bill" :lastname "Kill" :id "bill-haley" :user "x"}))
+
 (fact "Can load friend by username and id"
       (let [db (new-test-db)]
         (s/add-friend {:firstname "John" :lastname "Doe" :id "john-doe" :user "derek"} db)
