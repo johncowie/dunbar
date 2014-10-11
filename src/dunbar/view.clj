@@ -64,17 +64,28 @@
   [friends]
   [:table :tr.friend-row]
   (html/clone-for [{:keys [firstname lastname notes meet-freq id]} friends]
-                  [:tr.friend-row :.friend-name :a] (html/content (str firstname " " lastname))
-                  [:tr.friend-row :.friend-name :a] (html/set-attr :href (r/path :friend-details :id id))
-                  [:tr.friend-row :.friend-meet-freq] (html/content (str meet-freq))
-                  ))
+                  [:tr.friend-row :.friend-name :a]
+                    (html/content (str firstname " " lastname))
+                  [:tr.friend-row :.friend-name :a]
+                    (html/set-attr :href (r/path :friend-details :id id))
+                  [:tr.friend-row :.friend-meet-freq]
+                    (html/content (str meet-freq))
+                  [:tr.friend-row :.friend-just-seen [:input (html/attr= :type "hidden")]]
+                    (html/set-attr :value id)
+                  [:tr.friend-row :.friend-just-seen [:input (html/attr= :type "hidden")]]
+                    (html/set-attr :name "just-seen")
+                  [:tr.friend-row :.friend-just-seen :form]
+                    (html/set-attr :action (r/path :friend-list-update))
+                  [:tr.friend-row :.friend-just-seen :form]
+                    (html/set-attr :method "POST")))
 
 (html/defsnippet friend-details-snippet style-guide [:#friend-details]
-  [{:keys [firstname lastname meet-freq notes]}]
+  [{:keys [firstname lastname meet-freq notes last-seen]}]
   [:#friend-details-name] (html/content (str firstname " " lastname))
   [:#friend-details-meet-freq-firstname] (html/content firstname)
   [:#friend-details-meet-freq] (html/content (str meet-freq))
-  [:#friend-details-notes] (html/content notes))
+  [:#friend-details-notes] (html/content notes)
+  [:#friend-details-last-seen] (html/content (str last-seen)))
 
 (html/defsnippet not-found-snippet style-guide [:#not-found] [])
 (html/defsnippet server-error-snippet style-guide [:#server-error] [])

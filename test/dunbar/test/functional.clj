@@ -6,7 +6,9 @@
             [dunbar.test.test-utils :as u]
             [net.cgrand.enlive-html :as html]))
 
-(defn test-app [] (make-app (new-test-db) (new-test-clock 0)))
+(defn test-app
+  ([t] (make-app (new-test-db) (new-test-clock t)))
+  ([] (test-app 0)))
 
 (defn input-selector [tag name]
   [[tag (html/attr-has :name name)]])
@@ -68,6 +70,15 @@
        (check-friend-row 1 "Darth Vadar" "7")
        (check-friend-details "Boba" "Fett" "Bounty Hunter" "7")
        (check-friend-details "Darth" "Vadar" "Breathy" "7"))
+
+(facts "About when you've just seen a friend"
+       (start-session (test-app 777))
+       (login-to-app)
+       (add-friend "Anakin" "Skywalker" "a kid" "7")
+       (follow "Friends")
+       (press "Just seen them")
+       (follow "Anakin Skywalker")
+       (first-text [:#friend-details-last-seen]) => "777")
 
 (facts "General hygiene stuff"
        (start-session (test-app))

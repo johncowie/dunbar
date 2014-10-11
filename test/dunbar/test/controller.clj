@@ -52,6 +52,15 @@
                                                   (body-contains? "Jimmy Page")
                                                   (complement (body-contains? "Jack White"))))))
 
+(facts "Friend list update"
+       (fact "posting id sets last seen for friend"
+             (let [db (new-test-db)
+                   clock (new-test-clock 234)
+                   request (logged-in-request "user" {:just-seen "id"})]
+               (save! db "friends" {:user "user" :firstname "Bob" :lastname "Hoskins" :id "id"})
+               (c/friend-list-update db clock request) => (has-redirect-location? "/friends")
+               (first (query db "friends" {:id "id" :user "user"})) => (contains {:last-seen 234}))))
+
 (facts "About secured routes"
        (let [handlers (c/handlers (new-test-db) (new-test-clock 0))]
          (fact "Must be logged in to view add-friend-form"

@@ -30,6 +30,12 @@
   (let [friends (s/load-friends db (username request))]
     (html-response (v/friend-list-page "My friends" (navigation) friends))))
 
+(defn friend-list-update [db clock request]
+  (let [id (get-in request [:params :just-seen])]
+    (when-let [friend (s/load-friend db (username request) id)]
+      (s/update-friend (assoc friend :last-seen (now clock)) db))
+    (redirect (r/path :friend-list))))
+
 (defn friend-details [db request]
   (let [friend (s/load-friend db (username request) (get-in request [:params :id]))]
     (html-response (v/friend-details-page (str (:firstname friend) " " (:lastname friend)) (navigation) friend))))
@@ -92,6 +98,7 @@
    {:add-friend-form friend-form
     :add-friend (partial add-friend db clock)
     :friend-list (partial friend-list db)
+    :friend-list-update (partial friend-list-update db clock)
     :friend-details (partial friend-details db)}
    (map-over-vals wrap-secure)))
 

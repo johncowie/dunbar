@@ -5,4 +5,5 @@ GET  /logout            logout
 GET  /friends/add       add-friend-form
 POST /friends/add       add-friend
 GET  /friends           friend-list
+POST /friends           friend-list-update
 GET  /friends/:id       friend-details

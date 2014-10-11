@@ -38,7 +38,7 @@
   (delete! [this table query]
     (throw (Exception. "Implement me")))
   (update! [this table query record]
-    (throw (Exception. "Implement me"))))
+    (mongo-c/update (:db this) table query record)))
 
 (defn new-mongo-db [{{host :host port :port db-name :db} :mongo}]
   (MongoDB. host port db-name))
