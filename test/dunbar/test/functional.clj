@@ -81,7 +81,7 @@
        (check-friend-details "Boba" "Fett" "Bounty Hunter" "7")
        (check-friend-details "Darth" "Vadar" "Breathy" "7"))
 
-(future-facts "About when you've just seen a friend"
+(facts "About when you've just seen a friend"
        (start-session (test-app (tc/to-long (t/date-time 2014 03 25))))
        (login-to-app)
        (add-friend "Anakin" "Skywalker" "a kid" "week")
@@ -94,7 +94,7 @@
        (follow "Anakin Skywalker")
        (first-text [:#friend-details-last-seen]) => "25 MAR 2014")
 
-(future-facts "General hygiene stuff"
+(facts "General hygiene stuff"
        (start-session (test-app))
        (fact "can generate 404 page"
              (visit "/blah")
