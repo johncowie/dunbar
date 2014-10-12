@@ -53,11 +53,15 @@
               <input type="text" name="lastname" />
             </fieldset>
             <fieldset>
-              <label for="meet-freq">I want to see them every </label>
-              <select name="meet-freq">
-                <option value="1">day</option>
-                <option value="2">2 days</option>
-              </select>
+              I want to see them every
+                <span class="meet-freq">
+                  <input type="radio" name="meet-freq" value="2" id="meet-freq-2-weeks"/>
+                  <label for="radio-2-weeks">2 weeks</label>
+                </span>
+                <span class="meet-freq">
+                  <input type="radio" name="meet-freq" value="4" id="meet-freq-4-weeks" checked="checked"/>
+                  <label for="radio-4-weeks">4 years</label>
+                </span>
             </fieldset>
             <fieldset>
               <label for="notes">Notes:</label>

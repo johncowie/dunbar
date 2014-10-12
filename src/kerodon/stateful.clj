@@ -1,20 +1,21 @@
 (ns kerodon.stateful
   (:require [kerodon.core :as k]
+            [kerodon.impl :as i]
             [net.cgrand.enlive-html :as html]))
 
 (def ^:private state (atom {}))
 
 (defn- sfn [f & args]
-  (swap! state (fn [s] (apply f s args))))
+  (try
+    (swap! state (fn [s] (apply f s args)))
+    (catch Exception e
+      (prn e))))
 
 (defn start-session [app]
   (swap! state (constantly (k/session app))))
 
-(defn end-session []
-  (swap! state (constantly {})))
-
 (defn print-state []
-  (prn @state))
+  (prn (:enlive @state)))
 
 (defn follow-redirect []
   (sfn k/follow-redirect))
@@ -48,6 +49,9 @@
 (defn choose [selector value]
   (sfn k/choose selector value))
 
+(defn elements [selector]
+  (-> @state :enlive (html/select selector)))
+
 (defn text [selector]
   (map (comp first :content)
        (-> @state :enlive (html/select selector))))
@@ -55,16 +59,21 @@
 (defn first-text [selector]
   (first (text selector)))
 
-(defn value [selector]
-  (map (comp :value :attrs)
+(defn attribute [selector attr]
+  (map (comp attr :attrs)
        (-> @state :enlive (html/select selector))))
 
-(defn selected-value [selector]
-  (first (map (comp :value :attrs)
-              (-> @state
-                  :enlive
-                  (html/select selector)
-                  (html/select [[:option (html/attr= :selected "selected")]])))))
+(defn value [selector]
+  (attribute selector :value))
+
+(defn first-attribute [selector attr]
+  (first (attribute selector attr)))
+
+(defn is-checked? [selector]
+  (= (-> (i/form-element-for (:enlive @state) selector) first :attrs :checked) "checked"))
+
+(defn is-selected? [selector]
+  (= (-> (i/form-element-for (:enlive @state) selector) first :attrs :selected) "selected"))
 
 (defn first-value [selector]
   (first (value selector)))

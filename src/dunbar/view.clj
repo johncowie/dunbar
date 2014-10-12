@@ -49,7 +49,7 @@
   (html/clone-for [text (vals errors)]
                   [:li] (html/content (str text))))
 
-(def meet-freq-dropdown-values
+(def meet-freq-options
   [{:value "1" :text "day"}
    {:value "7" :text "week"}
    {:value "28" :text "month"}
@@ -62,13 +62,14 @@
   [[:input (html/attr= :name "firstname")]] (html/set-attr :value (:firstname posted-data))
   [[:input (html/attr= :name "lastname")]] (html/set-attr :value (:lastname posted-data))
   [[:textarea (html/attr= :name "notes")]] (html/set-attr :value (:notes posted-data))
-  [[:select (html/attr= :name "meet-freq")] [:option (html/but html/first-of-type)]] nil
-  [[:select (html/attr= :name "meet-freq")] [:option html/first-of-type]]
-  (html/clone-for [{value :value text :text} meet-freq-dropdown-values]
-                  [:option] (html/content text)
-                  [:option] (html/set-attr :value value))
-  [[:select (html/attr= :name "meet-freq")] [:option (html/attr= :value (:meet-freq posted-data))]]
-  (html/set-attr :selected "selected"))
+  [[:.meet-freq (html/but html/first-of-type)]] nil
+  [[:.meet-freq html/first-of-type]]
+  (html/clone-for [{value :value text :text} meet-freq-options]
+                  [:input] (html/set-attr :value (str value))
+                  [:input] (html/set-attr :id (str "meet-freq-" value))
+                  [:label] (html/content text)
+                  [:label] (html/set-attr :for (str "meet-freq-" value)))
+  [:.meet-freq [:input (html/attr= :value (:meet-freq posted-data))]] (html/set-attr :checked "checked"))
 
 (html/defsnippet friend-list-snippet style-guide [:#friend-list]
   [friends]
