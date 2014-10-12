@@ -75,7 +75,7 @@
                   [:tr.friend-row :.friend-name :a]
                     (html/set-attr :href (r/path :friend-details :id id))
                   [:tr.friend-row :.friend-meet-freq]
-                    (html/content (str meet-freq))
+                    (html/content (get data/meet-freq meet-freq))
                   [:tr.friend-row :.friend-just-seen :button]
                     (html/set-attr :value id)
                   [:tr.friend-row :.friend-just-seen :button]

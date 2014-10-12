@@ -43,7 +43,7 @@
        (fill-in firstname-field firstname)
        (fill-in lastname-field lastname)
        (fill-in notes-field notes)
-       (check "week")
+       (check meet-freq)
        (press "Add")))
 
 (defn check-friend-row [n name meet-freq]
@@ -66,25 +66,25 @@
        (start-session (test-app))
        (login-to-app)
        (fact "Creating an invalid friend returns validation error"
-             (add-friend (u/string-of-length 100) "Yoda" "Some notes" "week")
+             (add-friend (u/string-of-length 100) "Yoda" "Some notes" "once a week")
              (page-title) => "Add friend"
              (first-text [:.validation-errors :li]) =not=> empty?
              (fact "form fields are repopulated with old data"
                    (first-value firstname-field) => (u/string-of-length 100)
                    (first-value lastname-field) => "Yoda"
                    (first-value notes-field) => "Some notes"
-                   (is-checked? "week") => true))
-       (add-friend "Boba" "Fett" "Bounty Hunter" "week")
-       (add-friend "Darth" "Vadar" "Breathy" "week")
-       (check-friend-row 0 "Boba Fett" "7")
-       (check-friend-row 1 "Darth Vadar" "7")
+                   (is-checked? "once a week") => true))
+       (add-friend "Boba" "Fett" "Bounty Hunter" "once a week")
+       (add-friend "Darth" "Vadar" "Breathy" "once a month")
+       (check-friend-row 0 "Boba Fett" "once a week")
+       (check-friend-row 1 "Darth Vadar" "once a month")
        (check-friend-details "Boba" "Fett" "Bounty Hunter" "7")
-       (check-friend-details "Darth" "Vadar" "Breathy" "7"))
+       (check-friend-details "Darth" "Vadar" "Breathy" "28"))
 
 (facts "About when you've just seen a friend"
        (start-session (test-app (tc/to-long (t/date-time 2014 03 25))))
        (login-to-app)
-       (add-friend "Anakin" "Skywalker" "a kid" "week")
+       (add-friend "Anakin" "Skywalker" "a kid" "once a week")
        (follow "Friends")
        (page-title) => "My friends"
        (follow "Anakin Skywalker")
