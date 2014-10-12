@@ -1,6 +1,7 @@
 (ns dunbar.view
   (:require [net.cgrand.enlive-html :as html]
             [dunbar.routes :as r]
+            [dunbar.static-data :as data]
             [clj-time.coerce :as time-coerce]
             [clj-time.format :as time-format]))
 
@@ -49,12 +50,6 @@
   (html/clone-for [text (vals errors)]
                   [:li] (html/content (str text))))
 
-(def meet-freq-options
-  [{:value "1" :text "day"}
-   {:value "7" :text "week"}
-   {:value "28" :text "month"}
-   {:value "365" :text "year"}])  ; TODO move this to models
-
 (html/defsnippet friend-form-snippet style-guide [:#friend-form]
   [posted-data errors]
   [:.validation-errors] (when-not (empty? errors)
@@ -64,7 +59,7 @@
   [[:textarea (html/attr= :name "notes")]] (html/set-attr :value (:notes posted-data))
   [[:.meet-freq (html/but html/first-of-type)]] nil
   [[:.meet-freq html/first-of-type]]
-  (html/clone-for [{value :value text :text} meet-freq-options]
+  (html/clone-for [[value text] (sort-by first data/meet-freq)]
                   [:input] (html/set-attr :value (str value))
                   [:input] (html/set-attr :id (str "meet-freq-" value))
                   [:label] (html/content text)
