@@ -41,10 +41,11 @@
               (validate {:meet-freq ""}) => (has-error? [:meet-freq] :mandatory)
               (validate {:meet-freq "a"}) => (has-error? [:meet-freq] :numeric)
               (validate {:meet-freq "-1"}) => (has-error? [:meet-freq] :positive)
+              (validate {:meet-freq "2"}) => (has-error? [:meet-freq] :invalid)
               (validate {:meet-freq "1"}) =not=> (has-errors? [:meet-freq]))
        (fact "valid friend"
-             (validate {:firstname "Joe" :lastname "Bloggs" :notes "Some notes" :meet-freq "2"})
-             => {:firstname "Joe" :lastname "Bloggs" :notes "Some notes" :meet-freq "2"}))
+             (validate {:firstname "Joe" :lastname "Bloggs" :notes "Some notes" :meet-freq "7"})
+             => {:firstname "Joe" :lastname "Bloggs" :notes "Some notes" :meet-freq "7"}))
 
 ; Searching for missing translations
 

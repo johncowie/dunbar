@@ -1,5 +1,6 @@
 (ns dunbar.validation
-  (:require [clj-yaml.core :as yaml]))
+  (:require [clj-yaml.core :as yaml]
+            [dunbar.static-data :as data]))
 
 
 (defn min-length [length]
@@ -38,7 +39,7 @@
 
 (defn process-validation-list [value v]
   (let [status (cond (coll? v)
-                     (reduce (fn [result validation] (or result (validation value))) nil v)
+                     ((apply some-fn v) value)
                      :else
                      (v value))]
     (when-not (= status :valid)
@@ -67,11 +68,15 @@
 
 ;; NON-LIBRARY-BIT (FRIEND-SPECIFIC VALIDATIONS)
 
+(defn valid-meet-freq [v]
+  (when-not (contains? data/meet-freq (Integer/parseInt v))
+    :invalid))
+
 (def validations
   {:firstname [mandatory (max-length 50)]
    :lastname [mandatory (max-length 50)]
    :notes [optional (max-length 1000)]
-   :meet-freq [mandatory numeric positive]
+   :meet-freq [mandatory numeric positive valid-meet-freq]
    })
 
 

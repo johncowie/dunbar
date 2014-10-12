@@ -10,3 +10,4 @@ meet-freq:
   mandatory: "Meeting frequency is required"
   numeric: "Meeting frequency should be a numeric value"
   positive: "Meeting frequency should be positive"
+  invalid: "Meeting frequeny should be a valid option"
