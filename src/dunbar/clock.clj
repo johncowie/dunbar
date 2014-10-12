@@ -20,3 +20,6 @@
       (if (t/before? t1 t2)
         (t/in-days (t/interval t1 t2))
         (* -1 (t/in-days (t/interval t2 t1)))))))
+
+(defn date-time-millis [& args]
+  (c/to-long (apply t/date-time args)))

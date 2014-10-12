@@ -2,15 +2,16 @@
   (:require [midje.sweet :refer :all]
             [kerodon.stateful :refer :all]
             [dunbar.handler :refer [make-app]]
-            [dunbar.test.test-components :refer [new-test-db new-test-clock]]
+            [dunbar.clock :refer [date-time-millis]]
+            [dunbar.test.test-components :refer [new-test-db new-test-clock adjust]]
             [dunbar.test.test-utils :as u]
             [net.cgrand.enlive-html :as html]
             [clj-time.coerce :as tc]
             [clj-time.core :as t]))
 
 (defn test-app
-  ([t] (make-app (new-test-db) (new-test-clock t)))
-  ([] (test-app 0)))
+  ([clock] (make-app (new-test-db) clock))
+  ([] (test-app (new-test-clock 0))))
 
 (defn input-selector [tag n]
   [[tag (html/attr-has :name n)]])
@@ -72,17 +73,21 @@
        (check-friend-details "Darth" "Vadar" "Breathy" "once a month"))
 
 (facts "About when you've just seen a friend"
-       (start-session (test-app (tc/to-long (t/date-time 2014 03 25))))
-       (login-to-app)
-       (add-friend "Anakin" "Skywalker" "a kid" "once a week")
-       (follow "Friends")
-       (page-title) => "My friends"
-       (follow "Anakin Skywalker")
-       (first-text [:#friend-details-last-seen]) => "-"
-       (follow "Friends")
-       (press "Just seen them")
-       (follow "Anakin Skywalker")
-       (first-text [:#friend-details-last-seen]) => "25 MAR 2014")
+       (let [clock (new-test-clock (date-time-millis 2014 3 25))]
+         (start-session (test-app clock))
+         (login-to-app)
+         (add-friend "Anakin" "Skywalker" "a kid" "once a week")
+         (follow "Friends")
+         (first-text [:.friend-overdue-seen]) => "0"
+         (follow "Anakin Skywalker")
+         (first-text [:#friend-details-last-seen]) => "-"
+         (follow "Friends")
+         (press "Just seen them")
+         (follow "Anakin Skywalker")
+         (first-text [:#friend-details-last-seen]) => "25 MAR 2014"
+         (adjust clock (date-time-millis 2014 4 3))
+         (follow "Friends")
+         (first-text [:.friend-overdue-seen]) => "2"))
 
 (facts "General hygiene stuff"
        (start-session (test-app))

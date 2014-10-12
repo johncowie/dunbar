@@ -45,10 +45,16 @@
 
 ;;;;;;; Clock ;;;;;;;;;;
 
-(defrecord TestClock [constant-time]
+(defprotocol ITestClock
+  (adjust [this new-time]))
+
+(defrecord TestClock [time-atom]
   Clock
   (now [this]
-    constant-time))
+    @time-atom)
+  ITestClock
+  (adjust [this new-time]
+    (swap! time-atom (constantly new-time))))
 
-(defn new-test-clock [constant-time]
-  (TestClock. constant-time))
+(defn new-test-clock [t]
+  (TestClock. (atom t)))

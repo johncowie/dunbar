@@ -5,7 +5,8 @@
             [dunbar.store :as s]
             [dunbar.validation :refer [validate validate-with-translations]]
             [dunbar.logic :refer [error->]]
-            [dunbar.clock :refer [now]]))
+            [dunbar.clock :refer [now]]
+            [dunbar.processor :refer [process-friends]]))
 
 (defn username [request]
   (get-in request [:session :username]))
@@ -26,8 +27,8 @@
   [request]
   (html-response (v/friend-form-page "Add friend" (navigation) {} {})))
 
-(defn friend-list [db request]
-  (let [friends (s/load-friends db (username request))]
+(defn friend-list [db clock request]
+  (let [friends (-> (s/load-friends db (username request)) (process-friends clock))]
     (html-response (v/friend-list-page "My friends" (navigation) friends))))
 
 (defn friend-list-update [db clock request]
@@ -97,7 +98,7 @@
   (->
    {:add-friend-form friend-form
     :add-friend (partial add-friend db clock)
-    :friend-list (partial friend-list db)
+    :friend-list (partial friend-list db clock)
     :friend-list-update (partial friend-list-update db clock)
     :friend-details (partial friend-details db)}
    (map-over-vals wrap-secure)))

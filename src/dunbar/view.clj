@@ -69,13 +69,15 @@
 (html/defsnippet friend-list-snippet style-guide [:#friend-list]
   [friends]
   [:table :tr.friend-row]
-  (html/clone-for [{:keys [firstname lastname notes meet-freq id]} friends]
+  (html/clone-for [{:keys [firstname lastname notes meet-freq id overdue-seen]} friends]
                   [:tr.friend-row :.friend-name :a]
                     (html/content (str firstname " " lastname))
                   [:tr.friend-row :.friend-name :a]
                     (html/set-attr :href (r/path :friend-details :id id))
                   [:tr.friend-row :.friend-meet-freq]
                     (html/content (get data/meet-freq meet-freq))
+                  [:tr.friend-row :.friend-overdue-seen]
+                    (html/content (str overdue-seen))
                   [:tr.friend-row :.friend-just-seen :button]
                     (html/set-attr :value id)
                   [:tr.friend-row :.friend-just-seen :button]

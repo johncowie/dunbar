@@ -9,6 +9,9 @@
       (assoc stats-so-far :overdue-seen (if (neg? i) 0 i))))
 
 (defn process-friend [friend clock]
-  (-> {}
+  (-> friend
       (last-seen-interval friend clock)
       (overdue-to-see friend)))
+
+(defn process-friends [friends clock]
+  (map #(process-friend % clock) friends))
