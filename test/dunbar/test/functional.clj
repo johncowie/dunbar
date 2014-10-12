@@ -15,24 +15,14 @@
 (defn input-selector [tag n]
   [[tag (html/attr-has :name n)]])
 
-(defn radio-selector [n v]
-  [:input (html/attr= :type "radio" :name n :value v)])
-
 (def firstname-field (input-selector :input "firstname"))
 (def lastname-field (input-selector :input "lastname"))
 (def notes-field (input-selector :textarea "notes"))
-(defn meet-freq-radio [v]
-  (radio-selector "meet-freq" v))
-
-(->
-(html/html-snippet "<input type=\"radio\" value=\"1\" name=\"meet-freq\"></input>")
- (html/select (meet-freq-radio "1"))
- )
 
 (defn login-to-app []
   (facts "Can login to app"
          (visit "/")
-         (fill-in [[:input (html/attr-has :name "username")]] "John")
+         (fill-in "Please enter your username" "John")
          (press "Login")
          (page-title) => "My friends"))
 
@@ -40,9 +30,9 @@
   (facts (str "Adding a friend with name " firstname " " lastname)
        (follow "Add")
        (page-title) => "Add friend"
-       (fill-in firstname-field firstname)
-       (fill-in lastname-field lastname)
-       (fill-in notes-field notes)
+       (fill-in "First name:" firstname)
+       (fill-in "Last name:" lastname)
+       (fill-in "Notes:" notes)
        (check meet-freq)
        (press "Add")))
 
@@ -70,9 +60,9 @@
              (page-title) => "Add friend"
              (first-text [:.validation-errors :li]) =not=> empty?
              (fact "form fields are repopulated with old data"
-                   (first-value firstname-field) => (u/string-of-length 100)
-                   (first-value lastname-field) => "Yoda"
-                   (first-value notes-field) => "Some notes"
+                   (field-value "First name:") => (u/string-of-length 100)
+                   (field-value "Last name:") => "Yoda"
+                   (field-value "Notes:") => "Some notes"
                    (is-checked? "once a week") => true))
        (add-friend "Boba" "Fett" "Bounty Hunter" "once a week")
        (add-friend "Darth" "Vadar" "Breathy" "once a month")

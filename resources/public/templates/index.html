@@ -30,7 +30,7 @@
         <div id="login">
           <form method="POST">
             <h2>Login</h2>
-            <label for="username">Please enter your username</label>
+            <label for="login-username">Please enter your username</label>
             <input id="login-username" type="text" name="username" />
             <input id="login-submit" type="submit" value="Login"/>
           </form>
@@ -48,9 +48,9 @@
             <h2>Add a friend</h2>
             <fieldset>
               <label for="firstname">First name:</label>
-              <input type="text" name="firstname" />
+              <input id="firstname" type="text" name="firstname" />
               <label for="lastname">Last name:</label>
-              <input type="text" name="lastname" />
+              <input id="lastname" type="text" name="lastname" />
             </fieldset>
             <fieldset>
               I want to see them every
@@ -65,7 +65,7 @@
             </fieldset>
             <fieldset>
               <label for="notes">Notes:</label>
-              <textarea name="notes"></textarea>
+              <textarea id="notes" name="notes"></textarea>
             </fieldset>
             <input type="submit" value="Add">
           </form>

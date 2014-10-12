@@ -75,6 +75,9 @@
 (defn is-selected? [selector]
   (= (-> (i/form-element-for (:enlive @state) selector) first :attrs :selected) "selected"))
 
+(defn field-value [selector]
+  (-> (i/form-element-for (:enlive @state) selector) first :attrs :value))
+
 (defn first-value [selector]
   (first (value selector)))
 
