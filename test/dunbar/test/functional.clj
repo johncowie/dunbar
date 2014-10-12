@@ -78,8 +78,8 @@
        (add-friend "Darth" "Vadar" "Breathy" "once a month")
        (check-friend-row 0 "Boba Fett" "once a week")
        (check-friend-row 1 "Darth Vadar" "once a month")
-       (check-friend-details "Boba" "Fett" "Bounty Hunter" "7")
-       (check-friend-details "Darth" "Vadar" "Breathy" "28"))
+       (check-friend-details "Boba" "Fett" "Bounty Hunter" "once a week")
+       (check-friend-details "Darth" "Vadar" "Breathy" "once a month"))
 
 (facts "About when you've just seen a friend"
        (start-session (test-app (tc/to-long (t/date-time 2014 03 25))))

@@ -89,7 +89,7 @@
   [{:keys [firstname lastname meet-freq notes last-seen]}]
   [:#friend-details-name] (html/content (str firstname " " lastname))
   [:#friend-details-meet-freq-firstname] (html/content firstname)
-  [:#friend-details-meet-freq] (html/content (str meet-freq))
+  [:#friend-details-meet-freq] (html/content (get data/meet-freq meet-freq))
   [:#friend-details-notes] (html/content notes)
   [:#friend-details-last-seen] (html/content (show-date last-seen)))
 
