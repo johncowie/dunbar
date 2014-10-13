@@ -6,7 +6,7 @@
             [dunbar.validation :refer [validate validate-with-translations]]
             [dunbar.logic :refer [error->]]
             [dunbar.clock :refer [now]]
-            [dunbar.processor :refer [process-friends]]))
+            [dunbar.processor :refer [process-friends process-friend]]))
 
 (defn username [request]
   (get-in request [:session :username]))
@@ -37,8 +37,9 @@
       (s/update-friend (assoc friend :last-seen (now clock)) db))
     (redirect (r/path :friend-list))))
 
-(defn friend-details [db request]
-  (let [friend (s/load-friend db (username request) (get-in request [:params :id]))]
+(defn friend-details [db clock request]
+  (let [friend (s/load-friend db (username request) (get-in request [:params :id]))
+        processed-friend (process-friend friend clock)]
     (html-response (v/friend-details-page (str (:firstname friend) " " (:lastname friend)) (navigation) friend))))
 
 (defn generate-id [firstname lastname]
@@ -100,7 +101,7 @@
     :add-friend (partial add-friend db clock)
     :friend-list (partial friend-list db clock)
     :friend-list-update (partial friend-list-update db clock)
-    :friend-details (partial friend-details db)}
+    :friend-details (partial friend-details db clock)}
    (map-over-vals wrap-secure)))
 
 (defn open-handlers []

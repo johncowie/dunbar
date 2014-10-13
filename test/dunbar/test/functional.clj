@@ -87,7 +87,9 @@
          (first-text [:#friend-details-last-seen]) => "25 MAR 2014"
          (adjust clock (date-time-millis 2014 4 3))
          (follow "Friends")
-         (first-text [:.friend-overdue-seen]) => "2"))
+         (first-text [:.friend-overdue-seen]) => "2"
+         (follow "Anakin Skywalker")
+         (first-text [:#friend-details-overdue-seen]) => "2"))
 
 (facts "General hygiene stuff"
        (start-session (test-app))

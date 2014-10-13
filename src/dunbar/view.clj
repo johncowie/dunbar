@@ -88,12 +88,14 @@
                     (html/set-attr :method "POST")))
 
 (html/defsnippet friend-details-snippet style-guide [:#friend-details]
-  [{:keys [firstname lastname meet-freq notes last-seen]}]
+  [{:keys [firstname lastname meet-freq notes last-seen overdue-seen]}]
   [:#friend-details-name] (html/content (str firstname " " lastname))
   [:#friend-details-meet-freq-firstname] (html/content firstname)
   [:#friend-details-meet-freq] (html/content (get data/meet-freq meet-freq))
   [:#friend-details-notes] (html/content notes)
-  [:#friend-details-last-seen] (html/content (show-date last-seen)))
+  [:#friend-details-last-seen] (html/content (show-date last-seen))
+  [:#friend-details-overdue-seen] (html/content (str overdue-seen))
+  )
 
 (html/defsnippet not-found-snippet style-guide [:#not-found] [])
 (html/defsnippet server-error-snippet style-guide [:#server-error] [])
