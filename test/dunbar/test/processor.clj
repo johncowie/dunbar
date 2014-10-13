@@ -21,3 +21,15 @@
          (p/process-friend (build-friend {:last-seen (day 25 3) :meet-freq 7}) clock) => (contains {:overdue-seen 0})
          (p/process-friend (build-friend {:last-seen (day 15 3) :meet-freq 7}) clock) => (contains {:overdue-seen 8})
          (p/process-friend (build-friend {:last-seen nil :created-at (day 1 3) :meet-freq 7}) clock) => (contains {:overdue-seen 22})))
+
+(facts "processing list of friends"
+       (fact "should sort processed friends by overdue-seen (desc),
+              followed by firstname, then lastname"
+             (let [clock (new-test-clock (day 1 5))
+                   friends [(build-friend {:last-seen (day 1 4) :id 1 :meet-freq 1})
+                            (build-friend {:last-seen (day 1 3) :id 2 :meet-freq 1})
+                            (build-friend {:last-seen (day 27 3) :id 3 :meet-freq 1})
+                            (build-friend {:last-seen (day 15 3) :id 4 :meet-freq 1 :firstname "A" :lastname "B"})
+                            (build-friend {:last-seen (day 15 3) :id 5 :meet-freq 1 :firstname "A" :lastname "A"})
+                            (build-friend {:last-seen (day 15 3) :id 6 :meet-freq 1 :firstname "z" :lastname "z"})]]
+               (map :id (p/process-friends friends clock)) => [2 5 4 6 3 1])))

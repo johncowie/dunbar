@@ -14,4 +14,9 @@
       (overdue-to-see friend)))
 
 (defn process-friends [friends clock]
-  (map #(process-friend % clock) friends))
+  (->> friends
+    (map #(process-friend % clock))
+    (sort-by #(clojure.string/lower-case (str (:firstname %) (:lastname %))))
+    reverse
+    (sort-by :overdue-seen)
+    reverse))
