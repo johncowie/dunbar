@@ -40,7 +40,7 @@
 (defn friend-details [db clock request]
   (let [friend (s/load-friend db (username request) (get-in request [:params :id]))
         processed-friend (process-friend friend clock)]
-    (html-response (v/friend-details-page (str (:firstname friend) " " (:lastname friend)) (navigation) friend))))
+    (html-response (v/friend-details-page (str (:firstname friend) " " (:lastname friend)) (navigation) processed-friend))))
 
 (defn generate-id [firstname lastname]
   (str (clojure.string/lower-case firstname)
