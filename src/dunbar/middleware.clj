@@ -10,4 +10,7 @@
   (fn [request]
     (try
       (handler request)
-      (catch Exception e (server-error-handler request)))))
+      (catch Exception e
+        (do
+          (.printStackTrace e)
+          (server-error-handler request))))))

@@ -1,6 +1,7 @@
 GET  /                  home
 GET  /login             login-form
 POST /login             login
+GET  /oauth/twitter     twitter-callback
 GET  /logout            logout
 GET  /friends/add       add-friend-form
 POST /friends/add       add-friend

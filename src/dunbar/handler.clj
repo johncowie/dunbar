@@ -14,15 +14,16 @@
             [dunbar.routes :refer [routes]]
             [com.stuartsierra.component :as component]))
 
-(defn look-up-handler [db clock]
+(defn look-up-handler [config db clock twitter-oauth]
   (fn [id]
     (or
-     (id (c/handlers db clock))
-     (constantly nil))))
+     (id (c/handlers db clock twitter-oauth config))
+     (do (println "No handler found for id: " id)
+         (constantly nil)))))
 
-(defn make-app [db clock]
+(defn make-app [config db clock twitter-oauth]
   (->
-   (make-handler routes (look-up-handler db clock))
+   (make-handler routes (look-up-handler config db clock twitter-oauth))
     wrap-session
     wrap-keyword-params
     wrap-nested-params
@@ -33,24 +34,13 @@
     (wrap-404 c/four-o-four)
     (wrap-error-handling c/error)))
 
-(defrecord Handler [db clock]
+(defrecord WebServer [config db clock twitter-oauth]
   component/Lifecycle
   (start [this]
-    (assoc this :handle (make-app db clock)))
-  (stop [this]
-    (dissoc this :handle)))
-
-(defn new-handler
-  ([] (new-handler {}))
-  ([dependencies] (map->Handler dependencies)))
-
-(defrecord WebServer [port handler]
-  component/Lifecycle
-  (start [this]
-    (assoc this :server (run-jetty (:handle handler) {:port port})))
+    (assoc this :server (run-jetty (make-app config db clock twitter-oauth) {:port (get-in config [:app :port])})))
   (stop [this]
     (doto (:server this) .join .stop)
     (dissoc this :server)))
 
-(defn new-web-server [{{port :port} :app}]
-  (map->WebServer {:port port}))
+(defn new-web-server [config]
+  (map->WebServer {:config config}))

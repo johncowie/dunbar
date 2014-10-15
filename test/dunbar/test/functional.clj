@@ -5,26 +5,20 @@
             [dunbar.clock :refer [date-time-millis]]
             [dunbar.test.test-components :refer [new-test-db new-test-clock adjust]]
             [dunbar.test.test-utils :as u]
+            [dunbar.test.helpers.builders :as b]
+            [dunbar.oauth.twitter :refer [new-stub-twitter-oauth]]
             [net.cgrand.enlive-html :as html]
             [clj-time.coerce :as tc]
             [clj-time.core :as t]))
 
 (defn test-app
-  ([clock] (make-app (new-test-db) clock))
+  ([clock] (make-app {} (new-test-db) clock (new-stub-twitter-oauth (b/build-twitter-user))))
   ([] (test-app (new-test-clock 0))))
-
-(defn input-selector [tag n]
-  [[tag (html/attr-has :name n)]])
-
-(def firstname-field (input-selector :input "firstname"))
-(def lastname-field (input-selector :input "lastname"))
-(def notes-field (input-selector :textarea "notes"))
 
 (defn login-to-app []
   (facts "Can login to app"
          (visit "/")
-         (fill-in "Please enter your username" "John")
-         (press "Login")
+         (press "Login with twitter")
          (page-title) => "My friends"))
 
 (defn add-friend [firstname lastname notes meet-freq]

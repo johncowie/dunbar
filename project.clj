@@ -16,7 +16,10 @@
                  [clj-http "1.0.0"]
                  [clj-oauth2 "0.2.0" :exclusions [org.clojure/data.json]]
                  [org.clojure/data.json "0.2.3"]
-                 [clj-time "0.8.0"]]
+                 [clj-time "0.8.0"]
+                 [org.twitter4j/twitter4j-core "4.0.2"]
+                 [cheshire "5.3.1"]
+                 [environ "1.0.0"]]
   :plugins [[lein-ring "0.8.11"]
             [lein-midje "3.1.1"]]
   :ring {:handler dunbar.system/lein-ring-handler

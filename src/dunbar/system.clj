@@ -1,10 +1,12 @@
 (ns dunbar.system
   (:require [com.stuartsierra.component :as component]
-            [dunbar.handler :refer [new-web-server new-handler]]
+            [dunbar.handler :refer [new-web-server make-app]]
             [dunbar.mongo :refer [new-mongo-db]]
             [dunbar.clock :refer [new-joda-clock]]
             [dunbar.config :refer [load-config]]
-            [dunbar.test.test-components :refer [new-test-db]])
+            [dunbar.test.test-components :refer [new-test-db]]
+            [dunbar.oauth.twitter :refer [new-twitter-oauth new-stub-twitter-oauth]]
+            [environ.core :refer [env]])
   (:gen-class))
 
 (def system (atom {}))
@@ -12,10 +14,11 @@
 (defn construct-system [config-file]
   (let [config (load-config config-file)]
     (component/system-map
+     :config config
      :db (new-mongo-db config)
      :clock (new-joda-clock)
-     :handler (component/using (new-handler) [:db :clock])
-     :webserver (component/using (new-web-server config) [:handler]))))
+     :twitter-oauth (new-twitter-oauth (env :twitter-key) (env :twitter-secret))
+     :webserver (component/using (new-web-server config) [:db :clock :twitter-oauth]))))
 
 (defn start [system-map]
   (do
@@ -33,15 +36,25 @@
 
 ;;; stuff for lein ring server ;;;
 
+(def lein-handler (atom nil))
+
+(defn make-system-app [started-system]
+  (->>
+   [:config :db :clock :twitter-oauth]
+   (map (partial get started-system))
+   (apply make-app)))
+
 (defn start-lein []
   (-> (construct-system "config/app.yml")
       (dissoc :webserver)
       (assoc :db (new-test-db))
-      start))
+      (assoc :twitter-oauth (new-stub-twitter-oauth {:name "John"}))
+      start
+      make-system-app))
 
-(defn lein-ring-handler [request]
-  (when-not (get @system :handler)
-    (start-lein))
-  ((get-in @system [:handler :handle]) request))
+(defn lein-ring-handler [request] ; TODO fix
+  (when-not @lein-handler
+    (swap! lein-handler (constantly (start-lein))))
+  (@lein-handler request))
 
 ; TODO add destroy method

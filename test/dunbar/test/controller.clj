@@ -7,7 +7,7 @@
             [dunbar.test.helpers.builders :refer [build-friend]]))
 
 (defn logged-in-request [username params]
-  {:session {:username username}
+  {:session {:user {:name username}}
    :params params})
 
 (defn has-status? [status]
@@ -65,7 +65,7 @@
                (first (query db "friends" {:id "id" :user "user"})) => (contains {:last-seen 234}))))
 
 (facts "About secured routes"
-       (let [handlers (c/handlers (new-test-db) (new-test-clock 0))]
+       (let [handlers (c/handlers (new-test-db) (new-test-clock 0) {} {})]
          (fact "Must be logged in to view add-friend-form"
                ((:add-friend-form handlers) (logged-in-request "J" {})) =not=> (has-redirect-location? "/login")
                ((:add-friend-form handlers) {}) => (has-redirect-location? "/login"))

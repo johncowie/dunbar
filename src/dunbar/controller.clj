@@ -1,15 +1,16 @@
 (ns dunbar.controller
-  (:require [ring.util.response :refer [status response not-found redirect content-type]]
+  (:require [ring.util.response :refer [status response not-found redirect redirect-after-post content-type]]
             [dunbar.view :as v]
             [dunbar.routes :as r]
             [dunbar.store :as s]
             [dunbar.validation :refer [validate validate-with-translations]]
             [dunbar.logic :refer [error->]]
             [dunbar.clock :refer [now]]
-            [dunbar.processor :refer [process-friends process-friend]]))
+            [dunbar.processor :refer [process-friends process-friend]]
+            [dunbar.oauth.twitter :as twitter]))
 
 (defn username [request]
-  (get-in request [:session :username]))
+  (get-in request [:session :user :name]))
 
 (defn navigation []
   [{:text "Friends" :href (r/path :friend-list)}
@@ -17,6 +18,9 @@
 
 (defn html-response [body]
   (-> (response body) (content-type "text/html")))
+
+(defn absolute-url [config relative-url]
+  (str (:external-url config) relative-url))
 
 (defn home [_] (redirect (r/path :friend-list)))
 
@@ -64,11 +68,16 @@
       (redirect (r/path :friend-list))
       (html-response (v/friend-form-page "Add friend" (navigation) (:params request) (:errors state))))))
 
-(defn login [request]
-  (let [username (get-in request [:params :username])]
-    (->
-     (redirect (r/path :friend-list))
-     (assoc-in [:session :username] username))))
+(defn login [config twitter-oauth request]
+  (let [{:keys [request-token authentication-url] :as m} (twitter/get-request-token twitter-oauth (absolute-url config "/oauth/twitter"))]
+      (assoc-in (redirect-after-post authentication-url) [:session :request-token] request-token)))
+
+(defn twitter-callback [twitter-oauth request]
+  (let [request-token  (get-in request [:session :request-token])
+        oauth-verifier (get-in request [:params :oauth_verifier])
+        user           (twitter/callback twitter-oauth request-token oauth-verifier)]
+    (-> (redirect (r/path :home))
+        (assoc-in [:session :user] (select-keys user [:name :id :screen_name])))))
 
 (defn logout [request]
   (->
@@ -104,11 +113,14 @@
     :friend-details (partial friend-details db clock)}
    (map-over-vals wrap-secure)))
 
-(defn open-handlers []
+(defn open-handlers [config twitter-oauth]
   {:home home
-   :login login
+   :login (partial login config twitter-oauth)
    :logout logout
-   :login-form login-form})
+   :login-form login-form
+   :twitter-callback (partial twitter-callback twitter-oauth)})
 
-(defn handlers [db clock]
-  (merge (secure-handlers db clock) (open-handlers)))
+(defn handlers [db clock twitter-oauth config]
+  (merge
+   (secure-handlers db clock)
+   (open-handlers config twitter-oauth)))

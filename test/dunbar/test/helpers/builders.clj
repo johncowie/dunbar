@@ -14,3 +14,11 @@
     })
   ([overrides]
    (merge (build-friend) overrides)))
+
+(defn build-twitter-user
+  ([]
+   {:id 13245678
+    :name "bono"
+    :screen_name "Bono U2"})
+  ([overrides]
+   (merge (build-twitter-user) overrides)))
