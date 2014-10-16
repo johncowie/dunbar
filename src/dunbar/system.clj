@@ -30,9 +30,9 @@
     (println "Stopping system...")
     (component/stop-system @system)))
 
-(defn -main [config-file & args]
+(defn -main [& [config-file & args]]
   (.addShutdownHook (Runtime/getRuntime) (Thread. #(stop)))
-  (start (construct-system config-file)))
+  (start (construct-system (or config-file "config/app.yml"))))
 
 ;;; stuff for lein ring server ;;;
 
