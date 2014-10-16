@@ -3,7 +3,7 @@
             [kerodon.stateful :refer :all]
             [dunbar.handler :refer [make-app]]
             [dunbar.clock :refer [date-time-millis]]
-            [dunbar.test.test-components :refer [new-test-db new-test-clock adjust]]
+            [dunbar.components.stubs :refer [new-test-db new-test-clock adjust]]
             [dunbar.test.test-utils :as u]
             [dunbar.test.helpers.builders :as b]
             [dunbar.oauth.twitter :refer [new-stub-twitter-oauth]]

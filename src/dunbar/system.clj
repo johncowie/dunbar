@@ -4,7 +4,7 @@
             [dunbar.mongo :refer [new-mongo-db]]
             [dunbar.clock :refer [new-joda-clock]]
             [dunbar.config :refer [load-config]]
-            [dunbar.test.test-components :refer [new-test-db]]
+            [dunbar.components.stubs :refer [new-test-db]]
             [dunbar.oauth.twitter :refer [new-twitter-oauth new-stub-twitter-oauth]]
             [environ.core :refer [env]])
   (:gen-class))

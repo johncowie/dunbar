@@ -2,7 +2,7 @@
   (:require [midje.sweet :refer :all]
             [dunbar.mongo :refer [save! query]]
             [dunbar.controller :as c]
-            [dunbar.test.test-components :refer [new-test-db new-test-clock]]
+            [dunbar.components.stubs :refer [new-test-db new-test-clock]]
             [dunbar.clock :refer [date-time-millis]]
             [dunbar.test.helpers.builders :refer [build-friend]]))
 

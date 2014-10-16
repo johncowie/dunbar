@@ -3,7 +3,7 @@
             [dunbar.processor :as p]
             [clj-time.core :as t]
             [clj-time.coerce :as tc]
-            [dunbar.test.test-components :refer [new-test-clock]]
+            [dunbar.components.stubs :refer [new-test-clock]]
             [dunbar.test.helpers.builders :refer [build-friend]]))
 
 (defn day [d m]

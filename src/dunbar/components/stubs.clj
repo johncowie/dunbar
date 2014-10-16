@@ -1,16 +1,14 @@
-(ns dunbar.test.test-components
+(ns dunbar.components.stubs
   (:require [dunbar.mongo :refer [DB save! query update!]]
-            [dunbar.clock :refer [Clock now]]
-            [midje.sweet :refer :all]))
+            [dunbar.clock :refer [Clock now]]))
 
-;;;;;; DB ;;;;;;
+;; DB
 
 (defn entry-match [record [k v]]
   (= (get record k) v))
 
 (defn query-match [record q]
   (reduce #(and %1 (entry-match record %2)) true q))
-
 
 (defrecord TestDB [db-atom]
   DB
@@ -28,22 +26,7 @@
 (defn new-test-db []
   (TestDB. (atom {})))
 
-(facts "about test-db"
-       (facts "inserting and querying"
-              (let [db (new-test-db)]
-                (save! db "apples" {:id 1 :type "braeburn"})
-                (save! db "apples" {:id 2 :type "granny-smith"})
-                (query db "apples" {:type "braeburn"}) => [{:id 1 :type "braeburn"}]
-                (query db "apples" {:type "granny-smith"}) => [{:id 2 :type "granny-smith"}]))
-       (facts "updating"
-              (let [db (new-test-db)]
-                (save! db "apples" {:id 1 :type "blue"})
-                (save! db "apples" {:id 2 :type "green"})
-                (update! db "apples" {:id 1} {:id 1 :type "red"})
-                (query db "apples" {:id 1}) => [{:id 1 :type "red"}]
-                (query db "apples" {:id 2}) => [{:id 2 :type "green"}])))
-
-;;;;;;; Clock ;;;;;;;;;;
+;; Clock
 
 (defprotocol ITestClock
   (adjust [this new-time]))
