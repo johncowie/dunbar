@@ -1,7 +1,7 @@
 (ns dunbar.test.store
   (:require [midje.sweet :refer :all]
             [dunbar.store :as s]
-            [dunbar.test.test-components :refer [new-test-db]]))
+            [dunbar.components.stubs :refer [new-test-db]]))
 
 (fact "Can add and load friends by username"
       (let [db (new-test-db)]
