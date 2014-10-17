@@ -18,7 +18,7 @@
      :db (new-mongo-db config)
      :clock (new-joda-clock)
      :twitter-oauth (new-twitter-oauth (env :twitter-key) (env :twitter-secret))
-     :webserver (component/using (new-web-server config) [:db :clock :twitter-oauth]))))
+     :webserver (component/using (new-web-server (env :port) config) [:db :clock :twitter-oauth]))))
 
 (defn start [system-map]
   (do

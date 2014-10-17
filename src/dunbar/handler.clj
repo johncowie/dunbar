@@ -34,13 +34,13 @@
     (wrap-404 c/four-o-four)
     (wrap-error-handling c/error)))
 
-(defrecord WebServer [config db clock twitter-oauth]
+(defrecord WebServer [port config db clock twitter-oauth]
   component/Lifecycle
   (start [this]
-    (assoc this :server (run-jetty (make-app config db clock twitter-oauth) {:port (get-in config [:app :port])})))
+    (assoc this :server (run-jetty (make-app config db clock twitter-oauth) {:port (or port (get-in config [:app :port]))})))
   (stop [this]
     (doto (:server this) .join .stop)
     (dissoc this :server)))
 
-(defn new-web-server [config]
-  (map->WebServer {:config config}))
+(defn new-web-server [port config]
+  (map->WebServer {:port port :config config}))
