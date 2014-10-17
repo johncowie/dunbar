@@ -13,6 +13,8 @@
 
 (defn construct-system [config-file]
   (let [config (load-config config-file)]
+    (prn "TWITTER_KEY: " (env :twitter-key))
+    (prn "TWITTER_SECRET: " (env :twitter-secret))
     (component/system-map
      :config config
      :db (new-mongo-db config)
