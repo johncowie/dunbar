@@ -17,11 +17,9 @@
 
 (defn construct-system [config-file]
   (let [config (load-config config-file)]
-    (prn "TWITTER_KEY: " (env :twitter-key))
-    (prn "TWITTER_SECRET: " (env :twitter-secret))
     (component/system-map
      :config config
-     :db (new-mongo-db config)
+     :db (new-mongo-db (env :mongo-uri))
      :clock (new-joda-clock)
      :twitter-oauth (new-twitter-oauth (env :twitter-key) (env :twitter-secret))
      :webserver (component/using (new-web-server (load-env-port) config) [:db :clock :twitter-oauth]))))

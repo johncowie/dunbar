@@ -10,21 +10,21 @@
   (delete! [this table query])
   (update! [this table query record]))
 
-(defn init-db [this host port db-name]
-  (let [connection (mongo/connect {:host host :port port})]
+(defn init-db [this uri]
+  (let [:keys [conn db] (mongo/connect-via-uri uri)]
     (-> this
-        (assoc :connection connection)
-        (assoc :db (mongo/get-db connection db-name)))))
+        (assoc :connection conn)
+        (assoc :db db))))
 
 (defn disconnect [this]
   (mongo/disconnect (:connection this))
   (dissoc this :connection :db))
 
-(defrecord MongoDB [host port db-name]
+(defrecord MongoDB [uri]
   component/Lifecycle
   (start [this]
     (println "Starting up MongoDB")
-    (init-db this host port db-name))
+    (init-db this uri))
   (stop [this]
     (println "Stopping MongoDB")
     (disconnect this))
@@ -40,5 +40,5 @@
   (update! [this table query record]
     (mongo-c/update (:db this) table query record)))
 
-(defn new-mongo-db [{{host :host port :port db-name :db} :mongo}]
-  (MongoDB. host port db-name))
+(defn new-mongo-db [uri]
+  (MongoDB. uri))
