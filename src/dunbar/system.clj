@@ -34,7 +34,7 @@
 
 (defn -main [& [config-file & args]]
   (.addShutdownHook (Runtime/getRuntime) (Thread. #(stop)))
-  (start (construct-system (or config-file "config/app.yml"))))
+  (start (construct-system)))
 
 ;;; stuff for lein ring server ;;;
 
@@ -47,7 +47,7 @@
    (apply make-app)))
 
 (defn start-lein []
-  (-> (construct-system "config/app.yml")
+  (-> (construct-system)
       (dissoc :webserver)
       (assoc :db (new-test-db))
       (assoc :twitter-oauth (new-stub-twitter-oauth {:name "John"}))
