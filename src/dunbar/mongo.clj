@@ -11,7 +11,7 @@
   (update! [this table query record]))
 
 (defn init-db [this uri]
-  (let [:keys [conn db] (mongo/connect-via-uri uri)]
+  (let [{:keys [conn db]} (mongo/connect-via-uri uri)]
     (-> this
         (assoc :connection conn)
         (assoc :db db))))
