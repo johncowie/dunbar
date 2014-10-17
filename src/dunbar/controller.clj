@@ -22,6 +22,13 @@
 (defn absolute-url [config relative-url]
   (str (:external-url config) relative-url))
 
+(defn absolute-url-from-request [request relative-url]
+  (format "%s://%s%s%s"
+          (name (request :scheme))
+          (:server-name request)
+          (if (= (:server-port request) 80) "" (str ":" (:server-port request)))
+          relative-url))
+
 (defn home [_] (redirect (r/path :friend-list)))
 
 (defn login-form [request]
@@ -69,7 +76,7 @@
       (html-response (v/friend-form-page "Add friend" (navigation) (:params request) (:errors state))))))
 
 (defn login [config twitter-oauth request]
-  (let [{:keys [request-token authentication-url] :as m} (twitter/get-request-token twitter-oauth (absolute-url config "/oauth/twitter"))]
+  (let [{:keys [request-token authentication-url] :as m} (twitter/get-request-token twitter-oauth (absolute-url-from-request request "/oauth/twitter"))]
       (assoc-in (redirect-after-post authentication-url) [:session :request-token] request-token)))
 
 (defn twitter-callback [twitter-oauth request]
