@@ -11,6 +11,10 @@
 
 (def system (atom {}))
 
+(defn load-env-port []
+  (when (env :port)
+    (Integer/parseInt (env :port))))
+
 (defn construct-system [config-file]
   (let [config (load-config config-file)]
     (prn "TWITTER_KEY: " (env :twitter-key))
@@ -20,7 +24,7 @@
      :db (new-mongo-db config)
      :clock (new-joda-clock)
      :twitter-oauth (new-twitter-oauth (env :twitter-key) (env :twitter-secret))
-     :webserver (component/using (new-web-server (Integer/parseInt (env :port)) config) [:db :clock :twitter-oauth]))))
+     :webserver (component/using (new-web-server (load-env-port) config) [:db :clock :twitter-oauth]))))
 
 (defn start [system-map]
   (do
