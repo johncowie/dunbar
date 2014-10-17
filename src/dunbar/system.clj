@@ -15,14 +15,12 @@
   (when (env :port)
     (Integer/parseInt (env :port))))
 
-(defn construct-system [config-file]
-  (let [config (load-config config-file)]
-    (component/system-map
-     :config config
+(defn construct-system []
+  (component/system-map
      :db (new-mongo-db (env :mongo-uri))
      :clock (new-joda-clock)
      :twitter-oauth (new-twitter-oauth (env :twitter-key) (env :twitter-secret))
-     :webserver (component/using (new-web-server (load-env-port) config) [:db :clock :twitter-oauth]))))
+     :webserver (component/using (new-web-server (load-env-port)) [:db :clock :twitter-oauth])))
 
 (defn start [system-map]
   (do

@@ -19,9 +19,6 @@
 (defn html-response [body]
   (-> (response body) (content-type "text/html")))
 
-(defn absolute-url [config relative-url]
-  (str (:external-url config) relative-url))
-
 (defn absolute-url-from-request [request relative-url]
   (format "%s://%s%s%s"
           (name (request :scheme))
@@ -75,7 +72,7 @@
       (redirect (r/path :friend-list))
       (html-response (v/friend-form-page "Add friend" (navigation) (:params request) (:errors state))))))
 
-(defn login [config twitter-oauth request]
+(defn login [twitter-oauth request]
   (let [{:keys [request-token authentication-url] :as m} (twitter/get-request-token twitter-oauth (absolute-url-from-request request "/oauth/twitter"))]
       (assoc-in (redirect-after-post authentication-url) [:session :request-token] request-token)))
 
@@ -120,14 +117,14 @@
     :friend-details (partial friend-details db clock)}
    (map-over-vals wrap-secure)))
 
-(defn open-handlers [config twitter-oauth]
+(defn open-handlers [twitter-oauth]
   {:home home
-   :login (partial login config twitter-oauth)
+   :login (partial login twitter-oauth)
    :logout logout
    :login-form login-form
    :twitter-callback (partial twitter-callback twitter-oauth)})
 
-(defn handlers [db clock twitter-oauth config]
+(defn handlers [db clock twitter-oauth]
   (merge
    (secure-handlers db clock)
-   (open-handlers config twitter-oauth)))
+   (open-handlers twitter-oauth)))

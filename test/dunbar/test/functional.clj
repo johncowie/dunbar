@@ -12,7 +12,7 @@
             [clj-time.core :as t]))
 
 (defn test-app
-  ([clock] (make-app {} (new-test-db) clock (new-stub-twitter-oauth (b/build-twitter-user))))
+  ([clock] (make-app (new-test-db) clock (new-stub-twitter-oauth (b/build-twitter-user))))
   ([] (test-app (new-test-clock 0))))
 
 (defn login-to-app []
