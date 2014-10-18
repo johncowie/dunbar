@@ -42,7 +42,7 @@
 
 (defn make-system-app [started-system]
   (->>
-   [:config :db :clock :twitter-oauth]
+   [:db :clock :twitter-oauth]
    (map (partial get started-system))
    (apply make-app)))
 

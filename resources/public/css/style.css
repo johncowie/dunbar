@@ -6,12 +6,13 @@ body {
 
 a {
     text-decoration: none;
-    color: #fff;
+    color: #0000bb;
 }
 
 a:hover {
-    color: #990000;
+    color: #9999ee;
 }
+
 
 #friend-list {
     font-size: 1.0em;
@@ -77,6 +78,14 @@ a:hover {
 
 .navigation {
     background-color: #999999;
+}
+
+.header-list a {
+    color: #ffffff;
+}
+
+.header-list a:hover {
+    color: #990000;
 }
 
 .header-list {
