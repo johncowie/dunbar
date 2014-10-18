@@ -35,11 +35,12 @@
           {:request-token {:token (.getToken request-token)
                            :token-secret (.getTokenSecret request-token)}
                            :authentication-url (.getAuthenticationURL request-token)}))
-  (callback [this requestToken oauth-verifier]
-      (let [twitter-instance (instance this)]
-        (. twitter-instance (getOAuthAccessToken (new RequestToken (:token requestToken) (:token-secret requestToken)) oauth-verifier))
-        (let [user (. twitter-instance (showUser (. twitter-instance (getId))))]
-          (-> (TwitterObjectFactory/getRawJSON user) (json/parse-string keyword))))))
+  (callback [this request-token oauth-verifier]
+      (when (and request-token oauth-verifier)
+        (let [twitter-instance (instance this)]
+          (. twitter-instance (getOAuthAccessToken (new RequestToken (:token request-token) (:token-secret request-token)) oauth-verifier))
+          (let [user (. twitter-instance (showUser (. twitter-instance (getId))))]
+            (-> (TwitterObjectFactory/getRawJSON user) (json/parse-string keyword)))))))
 
 (defn new-twitter-oauth [consumer-key consumer-secret]
   (Twitter4JOAuth. consumer-key consumer-secret))

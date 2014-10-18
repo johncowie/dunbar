@@ -80,8 +80,10 @@
   (let [request-token  (get-in request [:session :request-token])
         oauth-verifier (get-in request [:params :oauth_verifier])
         user           (twitter/callback twitter-oauth request-token oauth-verifier)]
-    (-> (redirect (r/path :home))
-        (assoc-in [:session :user] (select-keys user [:name :id :screen_name])))))
+    (if user
+      (-> (redirect (r/path :home))
+          (assoc-in [:session :user] (select-keys user [:name :id :screen_name])))
+    (redirect (r/path :home)))))
 
 (defn logout [request]
   (->
