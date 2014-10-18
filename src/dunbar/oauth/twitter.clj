@@ -17,24 +17,29 @@
   (get-request-token [this callback-url])
   (callback [this request-token oauth-verifier]))
 
+(defn instance [this]
+  (.getInstance (:twitter-factory this)))
+
 (defrecord Twitter4JOAuth [consumer-key consumer-secret]
   component/Lifecycle
   (start [this]
     (prn "Starting twitter..")
-    (assoc this :twitter (. (TwitterFactory. (twitter-config consumer-key consumer-secret)) (getInstance))))
+    (assoc this :twitter-factory (TwitterFactory. (twitter-config consumer-key consumer-secret))))
   (stop [this]
     (prn "Stopping twitter..")
-    (dissoc this :twitter))
+    (dissoc this :twitter-factory))
   TwitterOAuth
   (get-request-token [this callback-url]
-    (let [request-token (. (:twitter this) (getOAuthRequestToken callback-url))]
+    (let [twitter-instance (instance this)
+          request-token (. twitter-instance (getOAuthRequestToken callback-url))]
           {:request-token {:token (.getToken request-token)
                            :token-secret (.getTokenSecret request-token)}
                            :authentication-url (.getAuthenticationURL request-token)}))
   (callback [this requestToken oauth-verifier]
-      (. (:twitter this) (getOAuthAccessToken (new RequestToken (:token requestToken) (:token-secret requestToken)) oauth-verifier))
-      (let [user (. (:twitter this) (showUser (. (:twitter this) (getId))))]
-        (-> (TwitterObjectFactory/getRawJSON user) (json/parse-string keyword)))))
+      (let [twitter-instance (instance this)]
+        (. twitter-instance (getOAuthAccessToken (new RequestToken (:token requestToken) (:token-secret requestToken)) oauth-verifier))
+        (let [user (. twitter-instance (showUser (. twitter-instance (getId))))]
+          (-> (TwitterObjectFactory/getRawJSON user) (json/parse-string keyword))))))
 
 (defn new-twitter-oauth [consumer-key consumer-secret]
   (Twitter4JOAuth. consumer-key consumer-secret))
