@@ -10,20 +10,13 @@
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.adapter.jetty :refer [run-jetty]]
             [dunbar.controller :as c]
-            [bidi.bidi :refer [make-handler]]
+            [scenic.routes :refer [scenic-handler]]
             [dunbar.routes :refer [routes]]
             [com.stuartsierra.component :as component]))
 
-(defn look-up-handler [db clock twitter-oauth]
-  (fn [id]
-    (or
-     (id (c/handlers db clock twitter-oauth))
-     (do (println "No handler found for id: " id)
-         (constantly nil)))))
-
 (defn make-app [db clock twitter-oauth]
   (->
-   (make-handler routes (look-up-handler db clock twitter-oauth))
+   (scenic-handler routes (c/handlers db clock twitter-oauth))
     wrap-session
     wrap-keyword-params
     wrap-nested-params
