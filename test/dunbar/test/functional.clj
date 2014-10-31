@@ -42,10 +42,10 @@
          (follow "Friends")
          (follow (str firstname " " lastname))
          (page-title) => (str firstname " " lastname)
-         (first-text [:#friend-details-name]) => (str firstname " " lastname)
-         (first-text [:#friend-details-meet-freq-firstname]) => firstname
-         (first-text [:#friend-details-meet-freq]) => meet-freq
-         (first-text [:#friend-details-notes]) => notes))
+         (text [:#friend-details-name]) => (str firstname " " lastname)
+         (text [:#friend-details-meet-freq-firstname]) => firstname
+         (text [:#friend-details-meet-freq]) => meet-freq
+         (text [:#friend-details-notes]) => notes))
 
 (facts "Creating a friend"
        (start-session (test-app))
@@ -53,7 +53,7 @@
        (fact "Creating an invalid friend returns validation error"
              (add-friend (u/string-of-length 100) "Yoda" "Some notes" "once a week")
              (page-title) => "Add friend"
-             (first-text [:.validation-errors :li]) =not=> empty?
+             (text [:.validation-errors :li]) =not=> empty?
              (fact "form fields are repopulated with old data"
                    (field-value "First name:") => (u/string-of-length 100)
                    (field-value "Last name:") => "Yoda"
@@ -72,18 +72,18 @@
          (login-to-app)
          (add-friend "Anakin" "Skywalker" "a kid" "once a week")
          (follow "Friends")
-         (first-text [:.friend-overdue-seen]) => "0"
+         (text [:.friend-overdue-seen]) => "0"
          (follow "Anakin Skywalker")
-         (first-text [:#friend-details-last-seen]) => "-"
+         (text [:#friend-details-last-seen]) => "-"
          (follow "Friends")
          (press "Just seen them")
          (follow "Anakin Skywalker")
-         (first-text [:#friend-details-last-seen]) => "25 MAR 2014"
+         (text [:#friend-details-last-seen]) => "25 MAR 2014"
          (adjust clock (date-time-millis 2014 4 3))
          (follow "Friends")
-         (first-text [:.friend-overdue-seen]) => "2"
+         (text [:.friend-overdue-seen]) => "2"
          (follow "Anakin Skywalker")
-         (first-text [:#friend-details-overdue-seen]) => "2"))
+         (text [:#friend-details-overdue-seen]) => "2"))
 
 (facts "General hygiene stuff"
        (start-session (test-app))

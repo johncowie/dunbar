@@ -52,12 +52,15 @@
 (defn elements [selector]
   (-> @state :enlive (html/select selector)))
 
-(defn text [selector]
-  (map (comp first :content)
-       (-> @state :enlive (html/select selector))))
+(defn nodes->text [n]
+  (cond
+    (map? n) (nodes->text (:content n))
+    (coll? n) (reduce str (map nodes->text n))
+    :else n))
 
-(defn first-text [selector]
-  (first (text selector)))
+(defn text [selector]
+  (let [t (map nodes->text (-> @state :enlive (html/select selector)))]
+    (if (<= (count t) 1) (first t) t)))
 
 (defn attribute [selector attr]
   (map (comp attr :attrs)
@@ -82,4 +85,4 @@
   (first (value selector)))
 
 (defn page-title []
-  (first (text [:title])))
+  (text [:title]))
