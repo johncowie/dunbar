@@ -50,16 +50,10 @@
         processed-friend (process-friend friend clock)]
     (html-response (v/friend-details-page (str (:firstname friend) " " (:lastname friend)) (navigation) processed-friend))))
 
-(defn generate-id [firstname lastname]
-  (str (clojure.string/lower-case firstname)
-       "-"
-       (clojure.string/lower-case lastname)))
-
 (defn marshall-to-db [params username clock]
   (->
    (select-keys params [:firstname :lastname :notes :meet-freq])
    (update-in [:meet-freq] #(Integer/parseInt %))
-   (assoc :id (generate-id (:firstname params) (:lastname params)))
    (assoc :user username)
    (assoc :created-at (now clock))))
 
