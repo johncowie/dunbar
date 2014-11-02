@@ -18,7 +18,7 @@
 
 (facts "can calculate how overdue you are to see your friend"
        (let [clock (new-test-clock (day 30 3))]
-         (p/process-friend (build-friend {:last-seen (day 25 3) :meet-freq 7}) clock) => (contains {:overdue-seen 0})
+         (p/process-friend (build-friend {:last-seen (day 25 3) :meet-freq 7}) clock) => (contains {:overdue-seen -2})
          (p/process-friend (build-friend {:last-seen (day 15 3) :meet-freq 7}) clock) => (contains {:overdue-seen 8})
          (p/process-friend (build-friend {:last-seen nil :created-at (day 1 3) :meet-freq 7}) clock) => (contains {:overdue-seen 22})))
 

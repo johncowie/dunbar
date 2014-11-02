@@ -6,7 +6,7 @@
 
 (defn overdue-to-see [stats-so-far {meet-freq :meet-freq}]
    (let [i (- (:last-seen-interval stats-so-far) meet-freq)]
-      (assoc stats-so-far :overdue-seen (if (neg? i) 0 i))))
+      (assoc stats-so-far :overdue-seen i)))
 
 (defn process-friend [friend clock]
   (-> friend

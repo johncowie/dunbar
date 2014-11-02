@@ -72,7 +72,7 @@
          (login-to-app)
          (add-friend "Anakin" "Skywalker" "a kid" "once a week")
          (follow "Friends")
-         (text [:.friend-overdue-seen]) => "0"
+         (text [:.friend-overdue-seen]) => "-7"
          (follow "Anakin Skywalker")
          (text [:#friend-details-last-seen]) => "-"
          (follow "Friends")
