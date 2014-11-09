@@ -29,7 +29,7 @@
        (fill-in "Last name:" lastname)
        (fill-in "Notes:" notes)
        (check meet-freq)
-       (press "Add")))
+       (press "Add Friend")))
 
 (defn check-friend-row [n name meet-freq]
   (facts "Checking friend row"

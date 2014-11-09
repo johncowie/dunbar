@@ -51,7 +51,18 @@
   (html/clone-for [text (vals errors)]
                   [:li] (html/content (str text))))
 
-(html/defsnippet friend-form-snippet style-guide [:#friend-form]
+(defn transform-radio [value text]
+  (fn [node]
+    (let [input (-> (html/select node [:input])
+                    first
+                    ((html/set-attr :value (str value)))
+                    ((html/set-attr :id (str "meet-freq-" value))))]
+      (-> node
+          ((html/content input))
+          ((html/append text))
+          ((html/set-attr :for (str "meet-freq-" value)))))))
+
+(html/defsnippet friend-form-snippet bootstrap [:#friend-form]
   [posted-data errors]
   [:.validation-errors] (when-not (empty? errors)
                           (html/substitute (validation-errors-snippet errors)))
@@ -61,10 +72,7 @@
   [[:.meet-freq (html/but html/first-of-type)]] nil
   [[:.meet-freq html/first-of-type]]
   (html/clone-for [[value text] (sort-by first data/meet-freq)]
-                  [:input] (html/set-attr :value (str value))
-                  [:input] (html/set-attr :id (str "meet-freq-" value))
-                  [:label] (html/content text)
-                  [:label] (html/set-attr :for (str "meet-freq-" value)))
+                  [:label] (transform-radio value text))
   [:.meet-freq [:input (html/attr= :value (:meet-freq posted-data))]] (html/set-attr :checked "checked"))
 
 (html/defsnippet friend-list-snippet bootstrap [:#friend-list]
