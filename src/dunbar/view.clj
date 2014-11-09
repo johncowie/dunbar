@@ -20,25 +20,25 @@
 (def style-guide "public/templates/index.html")
 (def bootstrap "public/templates/bootstrap.html")
 
-(html/defsnippet navigation-login-snippet style-guide [:#navigation-login]
+(html/defsnippet navigation-login-snippet bootstrap [:#navigation-login]
   [logged-in?]
-  [:ul [:li html/first-of-type] :a] (html/content (if logged-in? "Logout" "Login"))
-  [:ul [:li html/first-of-type] :a] (html/set-attr :href (r/path (if logged-in? :logout :login)))
-  )
+  [[:li html/first-of-type] :a] (html/content (if logged-in? "Logout" "Login"))
+  [[:li html/first-of-type] :a] (html/set-attr :href (r/path (if logged-in? :logout :login))))
 
-(html/defsnippet navigation-snippet style-guide [:#navigation]
+(html/defsnippet navigation-snippet bootstrap [:#navigation]
   [nav-links]
-  [:ul [:li (html/but html/first-of-type)]] nil ; remove all but first dummy link
-  [:ul [:li html/first-of-type]]
+  [[:li (html/but html/first-of-type)]] nil ; remove all but first dummy link
+  [[:li html/first-of-type]]
   (html/clone-for [{href :href text :text} nav-links]
+                  [:li] (html/remove-class "active")
                   [:li :a] (html/content text)
                   [:li :a] (html/set-attr :href href)))
 
-(html/deftemplate index-page-template style-guide
+(html/deftemplate index-page-template bootstrap
   [title nav-links logged-in? content-snippet]
   [:title] (html/content title)
   [:#navigation] (when logged-in? (html/substitute (navigation-snippet nav-links)))
-  [:#navigation-login] (html/substitute (navigation-login-snippet logged-in?))
+  [:#navigation-login] (html/content (navigation-login-snippet logged-in?))
   [:#content] (html/content content-snippet))
 
 (html/defsnippet login-form-snippet bootstrap [:#login]
@@ -67,7 +67,7 @@
                   [:label] (html/set-attr :for (str "meet-freq-" value)))
   [:.meet-freq [:input (html/attr= :value (:meet-freq posted-data))]] (html/set-attr :checked "checked"))
 
-(html/defsnippet friend-list-snippet style-guide [:#friend-list]
+(html/defsnippet friend-list-snippet bootstrap [:#friend-list]
   [friends]
   [:table :tr.friend-row]
   (html/clone-for [{:keys [firstname lastname notes meet-freq id overdue-seen]} friends]

@@ -34,13 +34,13 @@
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
+      <ul id="navigation" class="nav navbar-nav">
         <li class="active"><a href="#">Friends</a></li>
         <li><a href="#">Add</a></li>
       </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">Link</a></li>
-        <li class="dropdown">
+      <ul id="navigation-login" class="nav navbar-nav navbar-right">
+        <li><a href="#">Login</a></li>
+        <!-- <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
             <li><a href="#">Action</a></li>
@@ -49,16 +49,40 @@
             <li class="divider"></li>
             <li><a href="#">Separated link</a></li>
           </ul>
-        </li>
+        </li> -->
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-    <div class="container">
+    <div id="content" class="container">
         <form id="login" class="form-signin" role="form" method="POST">
             <h2 class="form-signin-heading">Please sign in</h2>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in with Twitter</button>
         </form>
+        <hr/>
+        <div id="friend-list">
+            <h2>Friends</h2>
+            <table class="table">
+              <tr>
+                <th>Name</th>
+                <th>I want to see them: </th>
+                <th>Days overdue in seeing them: </th>
+                <th></th>
+              </tr>
+              <tr class="friend-row">
+                <td class="friend-name">
+                  <a href="#">Emma Hughes</href>
+                </td>
+                <td class="friend-meet-freq">once a week</td>
+                <td class="friend-overdue-seen">37</td>
+                <td class="friend-just-seen">
+                <form>
+                    <button type="submit" value="id" class="btn btn-success">Just seen them</button>
+                </form>
+                </td>
+              </tr>
+           </table>
+        </div>
     </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

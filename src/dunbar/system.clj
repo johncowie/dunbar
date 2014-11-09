@@ -6,7 +6,8 @@
             [dunbar.config :refer [load-config]]
             [dunbar.components.stubs :refer [new-test-db]]
             [dunbar.oauth.twitter :refer [new-twitter-oauth new-stub-twitter-oauth]]
-            [environ.core :refer [env]])
+            [environ.core :refer [env]]
+            [net.cgrand.reload :refer [auto-reload]])
   (:gen-class))
 
 (def system (atom {}))
@@ -54,7 +55,8 @@
       start
       make-system-app))
 
-(defn lein-ring-handler [request] ; TODO fix
+(defn lein-ring-handler [request]
+  (auto-reload (find-ns 'dunbar.view))
   (when-not @lein-handler
     (swap! lein-handler (constantly (start-lein))))
   (@lein-handler request))
