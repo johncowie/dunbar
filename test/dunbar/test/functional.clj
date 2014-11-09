@@ -18,7 +18,7 @@
 (defn login-to-app []
   (facts "Can login to app"
          (visit "/")
-         (press "Login with twitter")
+         (press "Sign in with Twitter")
          (page-title) => "My friends"))
 
 (defn add-friend [firstname lastname notes meet-freq]

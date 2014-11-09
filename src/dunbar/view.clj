@@ -18,6 +18,7 @@
   [(keyword s)])
 
 (def style-guide "public/templates/index.html")
+(def bootstrap "public/templates/bootstrap.html")
 
 (html/defsnippet navigation-login-snippet style-guide [:#navigation-login]
   [logged-in?]
@@ -40,7 +41,7 @@
   [:#navigation-login] (html/substitute (navigation-login-snippet logged-in?))
   [:#content] (html/content content-snippet))
 
-(html/defsnippet login-form-snippet style-guide [:#login]
+(html/defsnippet login-form-snippet bootstrap [:#login]
   [])
 
 (html/defsnippet validation-errors-snippet style-guide [:#friend-form :.validation-errors]
