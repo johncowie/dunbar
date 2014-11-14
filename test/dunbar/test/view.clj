@@ -5,23 +5,31 @@
             ))
 
 (defn build-regex [& rs] (re-pattern (reduce str rs)))
-(def r-token #"[a-zA-Z-_]")
-(def r-attr #"[a-zA-Z]")
-(def r-tag #"[a-zA-Z]")
-(def r-id #"#[a-zA-Z-_]")
-(def r-class #".[a-zA-Z-_]")
 
-;(defn attribute [css-selector]
- ; (let [[match element attr v] (re-matches tag-with-attribute css-selector)]
-  ;  (when match
-   ;   [(keyword element) (html/attr= (keyword attr) v)])))
+(defn enlive-token [t]
+  (-> t
+      keyword))
 
-(defn basic-selector [css-selector]
-  (when-not (empty? css-selector)
-    (keyword css-selector)))
+(def token-pattern #"[.|#]?[a-z\-\_]+")
+
+(re-matches token-pattern "a")
+
+(defn build-AND-group [g]
+  (->> g
+       (re-seq token-pattern)
+       (map enlive-token)
+       vec))
+
+(build-AND-group "[a.b]")
+
+(defn tokenise-css [css]
+  (->>
+     (clojure.string/split css #"\s+")
+     (map build-AND-group)
+     vec))
 
 (defn css-select [s]
-  [((some-fn basic-selector) s)])
+ (tokenise-css s))
 
 (defn can-select? [html-fragment]
   (fn [selector]
@@ -31,10 +39,14 @@
         (do (prn snippet) (prn result) nil)
         true))))
 
-(future-fact "can convert strings into enlive selectors"
+(css-select "title")
+
+(select (html-snippet "<title></title>") [[:title]])
+
+(fact "can convert strings into enlive selectors"
        (css-select "title") => (can-select? "<title></title>")
        (css-select "#an-id") => (can-select? "<div id=\"an-id\"></div>")
        (css-select ".a-class") => (can-select? "<div class=\"a-class\"></div>")
-       (css-select "input[name=\"bob\"]") => (can-select? "<input name=\"bob\"></input>")
-       (css-select "input[name=\"bi-ll\"]") => (can-select? "<input name=\"bi-ll\"></input>")
+       ;(css-select "input[name=\"bob\"]") => (can-select? "<input name=\"bob\"></input>")
+       ;(css-select "input[name=\"bi-ll\"]") => (can-select? "<input name=\"bi-ll\"></input>")
      )
