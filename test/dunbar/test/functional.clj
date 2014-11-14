@@ -43,7 +43,6 @@
          (follow (str firstname " " lastname))
          (page-title) => (str firstname " " lastname)
          (text [:#friend-details-name]) => (str firstname " " lastname)
-         (text [:#friend-details-meet-freq-firstname]) => firstname
          (text [:#friend-details-meet-freq]) => meet-freq
          (text [:#friend-details-notes]) => notes))
 

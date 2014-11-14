@@ -44,7 +44,7 @@
 (html/defsnippet login-form-snippet bootstrap [:#login]
   [])
 
-(html/defsnippet validation-errors-snippet style-guide [:#friend-form :.validation-errors]
+(html/defsnippet validation-errors-snippet bootstrap [:#friend-form :.validation-errors]
   [errors]
   [:ul [:li (html/but html/first-of-type)]] nil
   [:ul [:li html/first-of-type]]
@@ -96,7 +96,7 @@
                   [:tr.friend-row :.friend-just-seen :form]
                     (html/set-attr :method "POST")))
 
-(html/defsnippet friend-details-snippet style-guide [:#friend-details]
+(html/defsnippet friend-details-snippet bootstrap [:#friend-details]
   [{:keys [firstname lastname meet-freq notes last-seen overdue-seen]}]
   [:#friend-details-name] (html/content (str firstname " " lastname))
   [:#friend-details-meet-freq-firstname] (html/content firstname)
