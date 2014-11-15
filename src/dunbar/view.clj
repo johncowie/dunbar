@@ -17,7 +17,6 @@
 (defn css-select [s]
   [(keyword s)])
 
-(def style-guide "public/templates/index.html")
 (def bootstrap "public/templates/bootstrap.html")
 
 (html/defsnippet navigation-login-snippet bootstrap [:#navigation-login]
@@ -106,8 +105,8 @@
   [:#friend-details-overdue-seen] (html/content (str overdue-seen))
   )
 
-(html/defsnippet not-found-snippet style-guide [:#not-found] [])
-(html/defsnippet server-error-snippet style-guide [:#server-error] [])
+(html/defsnippet not-found-snippet bootstrap [:#not-found] [])
+(html/defsnippet server-error-snippet bootstrap [:#server-error] [])
 
 (defn page
   [title nav-links logged-in? content]
