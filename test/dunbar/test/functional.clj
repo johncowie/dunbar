@@ -69,6 +69,7 @@
        (let [clock (new-test-clock (date-time-millis 2014 3 25))]
          (start-session (test-app clock))
          (login-to-app)
+         (follow "Friends")
          (add-friend "Anakin" "Skywalker" "a kid" "once a week")
          (follow "Friends")
          (text [:.friend-overdue-seen]) => "-7"
@@ -83,6 +84,18 @@
          (text [:.friend-overdue-seen]) => "2"
          (follow "Anakin Skywalker")
          (text [:#friend-details-overdue-seen]) => "2"))
+
+(facts "Zero state message when no friends have been added"
+       (start-session (test-app))
+       (login-to-app)
+       (follow "Friends")
+       (count (elements [:.zero-state])) => 1
+       (count (elements [:.table])) => 0
+       (follow [:.add-friend-link])
+       (page-title) => "Add friend"
+       (add-friend "Darth" "Maul" "he's bad" "once a week")
+       (follow "Friends")
+       (elements [:.zero-state]) => [])
 
 (facts "General hygiene stuff"
        (start-session (test-app))

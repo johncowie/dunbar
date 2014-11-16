@@ -76,24 +76,27 @@
 
 (html/defsnippet friend-list-snippet bootstrap [:#friend-list]
   [friends]
-  [:table :tr.friend-row]
-  (html/clone-for [{:keys [firstname lastname notes meet-freq id overdue-seen]} friends]
-                  [:tr.friend-row :.friend-name :a]
+  [:.add-friend-link] (html/set-attr :href (r/path :add-friend))
+  [:.zero-state] (when (empty? friends) identity)
+  [:table]
+  (when-not (empty? friends)
+    (html/clone-for [{:keys [firstname lastname notes meet-freq id overdue-seen]} friends]
+                    [:tr.friend-row :.friend-name :a]
                     (html/content (str firstname " " lastname))
-                  [:tr.friend-row :.friend-name :a]
+                    [:tr.friend-row :.friend-name :a]
                     (html/set-attr :href (r/path :friend-details :id id))
-                  [:tr.friend-row :.friend-meet-freq]
+                    [:tr.friend-row :.friend-meet-freq]
                     (html/content (get data/meet-freq meet-freq))
-                  [:tr.friend-row :.friend-overdue-seen]
+                    [:tr.friend-row :.friend-overdue-seen]
                     (html/content (str overdue-seen))
-                  [:tr.friend-row :.friend-just-seen :button]
+                    [:tr.friend-row :.friend-just-seen :button]
                     (html/set-attr :value id)
-                  [:tr.friend-row :.friend-just-seen :button]
+                    [:tr.friend-row :.friend-just-seen :button]
                     (html/set-attr :name "just-seen")
-                  [:tr.friend-row :.friend-just-seen :form]
+                    [:tr.friend-row :.friend-just-seen :form]
                     (html/set-attr :action (r/path :friend-list-update))
-                  [:tr.friend-row :.friend-just-seen :form]
-                    (html/set-attr :method "POST")))
+                    [:tr.friend-row :.friend-just-seen :form]
+                    (html/set-attr :method "POST"))))
 
 (html/defsnippet friend-details-snippet bootstrap [:#friend-details]
   [{:keys [firstname lastname meet-freq notes last-seen overdue-seen]}]
