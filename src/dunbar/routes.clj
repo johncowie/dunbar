@@ -1,6 +1,6 @@
 (ns dunbar.routes
   (:require [scenic.routes :refer [load-routes-from-file]]
-            [bidi.bidi :refer [path-for]]))
+            [bidi.bidi :refer [path-for match-route]]))
 
 (def routes (load-routes-from-file "routes.txt"))
 

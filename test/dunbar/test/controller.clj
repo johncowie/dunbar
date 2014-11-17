@@ -4,7 +4,8 @@
             [dunbar.controller :as c]
             [dunbar.components.stubs :refer [new-test-db new-test-clock]]
             [dunbar.clock :refer [date-time-millis]]
-            [dunbar.test.helpers.builders :refer [build-friend]]))
+            [dunbar.test.helpers.builders :refer [build-friend]]
+            [dunbar.routes :as r]))
 
 (defn logged-in-request [username params]
   {:session {:user {:name username}}
@@ -19,6 +20,15 @@
 (defn body-contains? [text]
   (fn [response]
     (re-find (re-pattern text) (:body response))))
+
+(facts "navigation"
+       (fact "can set which is selected"
+             (c/navigation :friend-list)
+                => [{:text "Friends" :href (r/path :friend-list) :selected true}
+                    {:text "Add" :href (r/path :add-friend-form)}])
+       (fact "is nil is passed in, then none are selected"
+             (let [nav-links (c/navigation)]
+               (filter :selected nav-links) => empty?)))
 
 (facts "Adding a friend"
        (fact "Can successfully add a friend"

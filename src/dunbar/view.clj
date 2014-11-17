@@ -28,8 +28,9 @@
   [nav-links]
   [[:li (html/but html/first-of-type)]] nil ; remove all but first dummy link
   [[:li html/first-of-type]]
-  (html/clone-for [{href :href text :text} nav-links]
+  (html/clone-for [{:keys [href text selected]} nav-links]
                   [:li] (html/remove-class "active")
+                  [:li] (if selected (html/add-class "active") identity)
                   [:li :a] (html/content text)
                   [:li :a] (html/set-attr :href href)))
 

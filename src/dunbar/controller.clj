@@ -20,9 +20,16 @@
 (defn username [request]
   (get-in request [:session :user :name]))
 
-(defn navigation []
-  [{:text "Friends" :href (r/path :friend-list)}
-   {:text "Add" :href (r/path :add-friend-form)}])
+(defn navigation
+  ([selected]
+      (->>
+       [{:text "Friends" :action :friend-list}
+        {:text "Add"     :action :add-friend-form}]
+       (map (fn [n] (if (= (:action n) selected) (assoc n :selected true) n)))
+       (map (fn [n] (-> n (assoc :href (r/path (:action n))) (dissoc :action))))))
+  ([] (navigation nil)))
+
+(navigation :friend-list)
 
 (defn html-response [body]
   (-> (response body) (content-type "text/html")))
@@ -41,11 +48,11 @@
 
 (defn friend-form
   [request]
-  (html-response (v/friend-form-page "Add friend" (navigation) {} {})))
+  (html-response (v/friend-form-page "Add friend" (navigation :add-friend-form) {} {})))
 
 (defn friend-list [db clock request]
   (let [friends (-> (s/load-friends db (username request)) (process-friends clock))]
-    (html-response (v/friend-list-page "My friends" (navigation) friends))))
+    (html-response (v/friend-list-page "My friends" (navigation :friend-list) friends))))
 
 (defn friend-list-update [db clock request]
   (let [id (get-in request [:params :just-seen])]
