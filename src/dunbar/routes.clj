@@ -6,4 +6,3 @@
 
 (defn path [action & params]
   (apply path-for routes action params))
-

@@ -6,16 +6,13 @@
 (def ^:private state (atom {}))
 
 (defn- sfn [f & args]
-  (try
-    (swap! state (fn [s] (apply f s args)))
-    (catch Exception e
-      (prn e))))
+  (swap! state (fn [s] (apply f s args))))
 
 (defn start-session [app]
   (swap! state (constantly (k/session app))))
 
-(defn print-state []
-  (prn (:enlive @state)))
+(defn current-state []
+  @state)
 
 (defn follow-redirect []
   (sfn k/follow-redirect))
@@ -41,7 +38,8 @@
   (auto-follow-redirect))
 
 (defn follow [selector]
-  (sfn k/follow selector))
+  (sfn k/follow selector)
+  (auto-follow-redirect))
 
 (defn check [selector]
   (sfn k/check selector))
@@ -51,6 +49,9 @@
 
 (defn elements [selector]
   (-> @state :enlive (html/select selector)))
+
+(defn current-url []
+  (-> @state :request :uri))
 
 (defn nodes->text [n]
   (cond

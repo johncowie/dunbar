@@ -46,6 +46,30 @@
          (text [:#friend-details-meet-freq]) => meet-freq
          (text [:#friend-details-notes]) => notes))
 
+(future-fact "Login redirects to previously requested page (if valid page)"
+       (start-session (test-app))
+       (visit "/friends/bob")
+       (page-title) => "Login"
+       (press "Sign in with Twitter")
+       (current-url) => "/friends/bob"
+       (page-title) => "Nothing to see here..")
+
+(facts "Logout clears session and user can no longer see friends page"
+       (start-session (test-app))
+       (fact "Can't initially view secure page"
+             (visit "/friends")
+             (page-title) => "Login")
+       (login-to-app)
+       (fact "After login can view secured page"
+             (visit "/friends")
+             (page-title) => "My friends")
+       (fact "When logging out am taken to Login page"
+             (follow "Logout")
+             (page-title) => "Login")
+       (fact "When returning to secured page, taken back to login"
+             (visit "/friends")
+             (page-title) => "Login"))
+
 (facts "Creating a friend"
        (start-session (test-app))
        (login-to-app)
@@ -99,14 +123,19 @@
 
 (facts "General hygiene stuff"
        (start-session (test-app))
-       (fact "can generate 404 page"
+       (fact "can get 404 page for unknown url"
+             (login-to-app)
              (visit "/blah")
              (page-title) => "Nothing to see here.."
              (status) => 404)
        (facts "navigation"
               (fact "can only see navigation if logged in"
-                    (follow "Friends") => nil
-                    (follow "Add") => nil
+                    (start-session (test-app))
+                    (follow "Friends") => (throws Exception)
+                    (follow "Add") => (throws Exception)
                     (login-to-app)
-                    (follow "Friends") =not=> nil
-                    (follow "Add") =not=> nil)))
+                    (follow "Friends")
+                    (page-title) => "My friends"
+                    (follow "Add")
+                    (page-title) => "Add friend"
+                    )))

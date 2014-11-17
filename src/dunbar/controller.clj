@@ -7,7 +7,15 @@
             [dunbar.logic :refer [error->]]
             [dunbar.clock :refer [now]]
             [dunbar.processor :refer [process-friends process-friend]]
-            [dunbar.oauth.twitter :as twitter]))
+            [dunbar.oauth.twitter :as twitter]
+            [clj-http.client :refer [generate-query-string]]
+            ))
+
+(defn url-with-query-params [params path]
+  (let [query-string (generate-query-string params)]
+    (if (empty? query-string)
+      path
+      (str path "?" query-string))))
 
 (defn username [request]
   (get-in request [:session :user :name]))
@@ -46,9 +54,9 @@
     (redirect (r/path :friend-list))))
 
 (defn friend-details [db clock request]
-  (let [friend (s/load-friend db (username request) (get-in request [:params :id]))
-        processed-friend (process-friend friend clock)]
-    (html-response (v/friend-details-page (str (:firstname friend) " " (:lastname friend)) (navigation) processed-friend))))
+  (when-let [friend (s/load-friend db (username request) (get-in request [:params :id]))]
+    (let [ processed-friend (process-friend friend clock)]
+      (html-response (v/friend-details-page (str (:firstname friend) " " (:lastname friend)) (navigation) processed-friend)))))
 
 (defn marshall-to-db [params username clock]
   (->
@@ -67,13 +75,15 @@
       (html-response (v/friend-form-page "Add friend" (navigation) (:params request) (:errors state))))))
 
 (defn login [twitter-oauth request]
-  (let [{:keys [request-token authentication-url] :as m} (twitter/get-request-token twitter-oauth (absolute-url-from-request request "/oauth/twitter"))]
+  (let [callback-url (absolute-url-from-request request (r/path :twitter-callback))
+        {:keys [request-token authentication-url] :as m} (twitter/get-request-token twitter-oauth callback-url)]
       (assoc-in (redirect-after-post authentication-url) [:session :request-token] request-token)))
 
 (defn twitter-callback [twitter-oauth request]
   (let [request-token  (get-in request [:session :request-token])
         oauth-verifier (get-in request [:params :oauth_verifier])
-        user           (twitter/callback twitter-oauth request-token oauth-verifier)]
+        user           (twitter/callback twitter-oauth request-token oauth-verifier)
+        redirect-path  (get-in request [:params :uri])]
     (if user
       (-> (redirect (r/path :home))
           (assoc-in [:session :user] (select-keys user [:name :id :screen_name])))
@@ -82,9 +92,11 @@
 (defn logout [request]
   (->
    (redirect (r/path :login))
-   (dissoc :session)))
+   (assoc :session {})))
 
-(defn not-logged-in [request] (redirect (r/path :login-form)))
+(defn not-logged-in [request]
+  ;(redirect (-> request (select-keys [:uri]) (url-with-query-params (r/path :login-form))))
+  (redirect (r/path :login-form)))
 
 (defn wrap-secure [handler]
   (fn [request]
