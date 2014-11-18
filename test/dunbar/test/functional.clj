@@ -12,7 +12,7 @@
             [clj-time.core :as t]))
 
 (defn test-app
-  ([clock] (make-app (new-test-db) clock (new-stub-twitter-oauth (b/build-twitter-user))))
+  ([clock] (make-app (new-test-db) clock (new-stub-twitter-oauth (b/build-twitter-user {:name "Geoff"}))))
   ([] (test-app (new-test-clock 0))))
 
 (defn login-to-app []
@@ -64,7 +64,7 @@
              (visit "/friends")
              (page-title) => "My friends")
        (fact "When logging out am taken to Login page"
-             (follow "Logout")
+             (follow "Logout, Geoff")
              (page-title) => "Login")
        (fact "When returning to secured page, taken back to login"
              (visit "/friends")

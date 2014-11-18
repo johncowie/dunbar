@@ -20,9 +20,9 @@
 (def bootstrap "public/templates/bootstrap.html")
 
 (html/defsnippet navigation-login-snippet bootstrap [:#navigation-login]
-  [logged-in?]
-  [[:li html/first-of-type] :a] (html/content (if logged-in? "Logout" "Login"))
-  [[:li html/first-of-type] :a] (html/set-attr :href (r/path (if logged-in? :logout :login))))
+  [username]
+  [[:li html/first-of-type] :a] (html/content (if username (str "Logout, " username) "Login"))
+  [[:li html/first-of-type] :a] (html/set-attr :href (r/path (if username :logout :login))))
 
 (html/defsnippet navigation-snippet bootstrap [:#navigation]
   [nav-links]
@@ -35,10 +35,10 @@
                   [:li :a] (html/set-attr :href href)))
 
 (html/deftemplate index-page-template bootstrap
-  [title nav-links logged-in? content-snippet]
+  [title nav-links username content-snippet]
   [:title] (html/content title)
-  [:#navigation] (when logged-in? (html/substitute (navigation-snippet nav-links)))
-  [:#navigation-login] (html/content (navigation-login-snippet logged-in?))
+  [:#navigation] (when username (html/substitute (navigation-snippet nav-links)))
+  [:#navigation-login] (html/content (navigation-login-snippet username))
   [:#content] (html/content content-snippet))
 
 (html/defsnippet login-form-snippet bootstrap [:#login]
@@ -79,7 +79,8 @@
   [friends]
   [:.add-friend-link] (html/set-attr :href (r/path :add-friend))
   [:.zero-state] (when (empty? friends) identity)
-  [:table]
+  [:table] (when-not (empty? friends) identity)
+  [:table :tr.friend-row]
   (when-not (empty? friends)
     (html/clone-for [{:keys [firstname lastname notes meet-freq id overdue-seen]} friends]
                     [:tr.friend-row :.friend-name :a]
@@ -113,8 +114,8 @@
 (html/defsnippet server-error-snippet bootstrap [:#server-error] [])
 
 (defn page
-  [title nav-links logged-in? content]
-  (reduce str (index-page-template title nav-links logged-in? content)))
+  [title nav-links username content]
+  (reduce str (index-page-template title nav-links username content)))
 
 (defn not-found-page [title nav username]
   (page title nav username (not-found-snippet)))
@@ -123,13 +124,13 @@
   (page title nav username (server-error-snippet)))
 
 (defn login-form-page [title]
-  (page title [] false (login-form-snippet)))
+  (page title [] nil (login-form-snippet)))
 
-(defn friend-form-page [title nav posted-data errors]
-  (page title nav true (friend-form-snippet posted-data errors)))
+(defn friend-form-page [title nav username posted-data errors]
+  (page title nav username (friend-form-snippet posted-data errors)))
 
-(defn friend-list-page [title nav friends]
-  (page title nav true (friend-list-snippet friends)))
+(defn friend-list-page [title nav username friends]
+  (page title nav username (friend-list-snippet friends)))
 
-(defn friend-details-page [title nav friend]
-  (page title nav true (friend-details-snippet friend)))
+(defn friend-details-page [title nav username friend]
+  (page title nav username (friend-details-snippet friend)))

@@ -17,6 +17,9 @@
       path
       (str path "?" query-string))))
 
+(defn user [request]
+  (get-in request [:session :user]))
+
 (defn username [request]
   (get-in request [:session :user :name]))
 
@@ -28,8 +31,6 @@
        (map (fn [n] (if (= (:action n) selected) (assoc n :selected true) n)))
        (map (fn [n] (-> n (assoc :href (r/path (:action n))) (dissoc :action))))))
   ([] (navigation nil)))
-
-(navigation :friend-list)
 
 (defn html-response [body]
   (-> (response body) (content-type "text/html")))
@@ -48,11 +49,11 @@
 
 (defn friend-form
   [request]
-  (html-response (v/friend-form-page "Add friend" (navigation :add-friend-form) {} {})))
+  (html-response (v/friend-form-page "Add friend" (navigation :add-friend-form) (user request) {} {})))
 
 (defn friend-list [db clock request]
   (let [friends (-> (s/load-friends db (username request)) (process-friends clock))]
-    (html-response (v/friend-list-page "My friends" (navigation :friend-list) friends))))
+    (html-response (v/friend-list-page "My friends" (navigation :friend-list) (username request) friends))))
 
 (defn friend-list-update [db clock request]
   (let [id (get-in request [:params :just-seen])]
@@ -62,8 +63,9 @@
 
 (defn friend-details [db clock request]
   (when-let [friend (s/load-friend db (username request) (get-in request [:params :id]))]
-    (let [ processed-friend (process-friend friend clock)]
-      (html-response (v/friend-details-page (str (:firstname friend) " " (:lastname friend)) (navigation) processed-friend)))))
+    (let [processed-friend (process-friend friend clock)
+          title (str (:firstname friend) " " (:lastname friend))]
+      (html-response (v/friend-details-page title (navigation) (user request) processed-friend)))))
 
 (defn marshall-to-db [params username clock]
   (->
@@ -79,7 +81,7 @@
                                          #(s/add-friend % db))]
     (if success
       (redirect (r/path :friend-list))
-      (html-response (v/friend-form-page "Add friend" (navigation) (:params request) (:errors state))))))
+      (html-response (v/friend-form-page "Add friend" (navigation) (username request) (:params request) (:errors state))))))
 
 (defn login [twitter-oauth request]
   (let [callback-url (absolute-url-from-request request (r/path :twitter-callback))
