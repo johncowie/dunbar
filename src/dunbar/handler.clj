@@ -16,7 +16,7 @@
 
 (defn make-app [db clock twitter-oauth]
   (->
-   (scenic-handler routes (c/handlers db clock twitter-oauth))
+   (scenic-handler routes (c/handlers db clock twitter-oauth) c/four-o-four)
     wrap-session
     wrap-keyword-params
     wrap-nested-params
@@ -24,7 +24,6 @@
     wrap-multipart-params
     wrap-content-type
     (wrap-resource "/public")
-    (wrap-404 c/four-o-four)
     (wrap-error-handling c/error)))
 
 (defrecord WebServer [port db clock twitter-oauth]

@@ -19,7 +19,8 @@
   (query-one [this table query]
     (throw (Exception. "Implement me")))
   (delete! [this table query]
-    (throw (Exception. "Implement me")))
+    ;(swap! db-atom (fn [db] ()))
+    )
   (update! [this table query record]
     (swap! db-atom (fn [db] (update-in db [table] (fn [table] (map #(if (query-match % query) record %) table)))))))
 

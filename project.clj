@@ -20,7 +20,7 @@
                  [org.twitter4j/twitter4j-core "4.0.2"]
                  [cheshire "5.3.1"]
                  [environ "1.0.0"]
-                 [scenic "0.1.0"]]
+                 [scenic "0.2.1"]]
   :plugins [[lein-ring "0.8.11"]
             [lein-midje "3.1.1"]]
   :ring {:handler dunbar.system/lein-ring-handler
