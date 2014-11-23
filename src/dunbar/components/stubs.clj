@@ -7,22 +7,26 @@
 (defn entry-match [record [k v]]
   (= (get record k) v))
 
-(defn query-match [record q]
-  (reduce #(and %1 (entry-match record %2)) true q))
+(defn query-match [q]
+  (fn [record]
+    (reduce #(and %1 (entry-match record %2)) true q)))
+
+(defn remove-by-query [table query]
+  (fn [db]
+    (update-in db [table] (partial remove (query-match query)))))
 
 (defrecord TestDB [db-atom]
   DB
   (save! [this table record]
     (swap! db-atom (fn [db] (update-in db [table] #(conj % record)))))
   (query [this table query]
-    (filter #(query-match % query) (get @db-atom table)))
+    (filter (query-match query) (get @db-atom table)))
   (query-one [this table query]
     (throw (Exception. "Implement me")))
   (delete! [this table query]
-    ;(swap! db-atom (fn [db] ()))
-    )
+    (swap! db-atom (remove-by-query table query)))
   (update! [this table query record]
-    (swap! db-atom (fn [db] (update-in db [table] (fn [table] (map #(if (query-match % query) record %) table)))))))
+    (swap! db-atom (fn [db] (update-in db [table] (fn [table] (map #(if ((query-match query) %) record %) table)))))))
 
 (defn new-test-db []
   (TestDB. (atom {})))

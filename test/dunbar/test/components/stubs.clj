@@ -17,7 +17,7 @@
                 (update! db "apples" {:id 1} {:id 1 :type "red"})
                 (query db "apples" {:id 1}) => [{:id 1 :type "red"}]
                 (query db "apples" {:id 2}) => [{:id 2 :type "green"}]))
-       (future-fact "deleting"
+       (facts "deleting"
               (let [db (new-test-db)]
                 (save! db "apples" {:id 1 :type "blue"})
                 (save! db "apples" {:id 2 :type "green"})
