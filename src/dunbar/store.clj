@@ -1,5 +1,5 @@
 (ns dunbar.store
-  (:require [dunbar.mongo :refer [save! query update!]]
+  (:require [dunbar.mongo :refer [save! query update! delete!]]
             [clojure.string :as s]))
 
 (def friend-coll "friends")
@@ -28,3 +28,6 @@
 
 (defn load-friend [db username id]
   (first (query db friend-coll {:user username :id id})))
+
+(defn remove-friend [db username id]
+  (delete! db friend-coll {:user username :id id}))

@@ -31,6 +31,16 @@
         (s/load-friend db "derek" "john-doe") => {:firstname "John" :lastname "Doe" :id "john-doe" :user "derek"}
         (s/load-friend db "dilbert" "john-doe") => {:firstname "John" :lastname "Doe" :id "john-doe" :user "dilbert"}))
 
+(fact "Can delete friend by id"
+      (let [db (new-test-db)]
+        (s/add-friend {:firstname "John" :lastname "Doe" :user "me"} db)
+        (s/add-friend {:firstname "John" :lastname "Doe2" :user "me"} db)
+        (count (s/load-friends db "me")) => 2
+        (s/remove-friend db "bob" "john-doe")
+        (count (s/load-friends db "me")) => 2
+        (s/remove-friend db "me" "john-doe")
+        (s/load-friends db "me") => [{:firstname "John" :lastname "Doe2" :id "john-doe2" :user "me"}]))
+
 (fact "Can generate ID for a friend"
       (let [db (new-test-db)]
         (s/generate-id db {:firstname "John" :lastname "Doe"}) => "john-doe"
